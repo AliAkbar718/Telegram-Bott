@@ -18,7 +18,7 @@ CHANNEL_ID =  -1002317714854
 
 bot = telebot.TeleBot(TOKEN)
 
-WEBHOOK_URL = 'https://telegram-bot81.onrender.com/webhook'
+WEBHOOK_URL = 'https://telegram-bott-xuhm.onrender.com/webhook'
 bot.remove_webhook()
 bot.set_webhook(url=WEBHOOK_URL)
 
@@ -163,17 +163,7 @@ def welcome_new_user(message):
         response = f' {weekday_fa} {date_str} \n\nزمان: {time_str}  '
         bot.send_message(message.chat.id, f'درود به گپمون خوش اومدی✨❤️{message.from_user.first_name}\n\nامروز{response}')
 
-@bot.chat_join_request_handler(func=lambda r: True)
-def approve(r):
-    try:
-        bot.approve_chat_join_request(r.chat.id, r.from_user.id)
-        bot.send_message(
-            r.chat.id,
-            f"کاربر <b>{r.from_user.first_name}</b> در گروه پذیرفته شد.",
-            parse_mode="HTML"
-        )
-    except Exception as e:
-        print(f"خطا در تأیید عضویت: {e}")
+
 
 def is_user_admin(chat_id, user_id):
     try:
@@ -187,12 +177,6 @@ def is_user_admin(chat_id, user_id):
         return False
 
 
-def is_user_admin(chat_id, user_id):
-    admins = bot.get_chat_administrators(chat_id)
-    for admin in admins:
-        if admin.user.id == user_id:
-            return True
-    return False
 
 
 # دیکشنری برای شمارش تخلف‌ها
@@ -465,67 +449,58 @@ def joraat_haghighat(m):
 def welcome(message):
     bot.reply_to(message,"از منوی زیر در صفحه کلید گزینه ای را انتخاب نمایید:", reply_markup=reply_keyboard)
 
-
 @bot.message_handler(content_types=['text'])
-def option_messages(message):
+def handle_all_messages(message):
+    chat_id = message.chat.id
+    user_id = message.from_user.id
     text = message.text.lower().strip()
-    name = message.from_user.first_name
+    first_name = message.from_user.first_name
 
-    print("پیام دریافت شد:", text)
+    # بررسی لینک و اخطار
+    if any(word in text for word in ['http', 'https', 't.me', '@']):
+        if not is_admin(chat_id, user_id):
+            try:
+                bot.delete_message(chat_id, message.message_id)
+                user_warnings[user_id] = user_warnings.get(user_id, 0) + 1
 
+                if user_warnings[user_id] == 1:
+                    bot.send_message(chat_id, f"⚠️ کاربر {first_name} ارسال لینک 1 از 2 — در صورت تکرار حذف خواهید شد.")
+                elif user_warnings[user_id] >= 2:
+                    bot.send_message(chat_id, f"⛔️ کاربر {first_name} ارسال لینک 2 از 2 — شما از گروه حذف شدید.")
+                    bot.ban_chat_member(chat_id, user_id)
+
+            except Exception as e:
+                print(f"خطا در حذف لینک یا بن: {e}")
+        return
+
+    # پاسخ به پیام‌های مشخص
     if text == 'شروع':
-        bot.reply_to(message, 'سلام من علی بات🤖 هستم\n\nبرای اطلاع از قابلیت من کلمه <b> «لیست» </b> رو ارسال کن', parse_mode="HTML")
+        bot.reply_to(message, 'سلام من علی بات🤖 هستم\n\nبرای اطلاع از قابلیت‌هام، بنویس «لیست»', parse_mode="HTML")
 
     elif text == 'مدیریت گروه🤵‍♂️':
-        bot.reply_to(message, 'برای اینکه ربات بتواند گروه شما را مدیریت کند\n\nابتدا باید ربات را در گروه خود عضو کرده و سپس ادمین کامل کنید.')
-
-    elif text == 'لیست':
-        bot.send_message(message.chat.id,
-            '1-<code> مدیریت گروه🤵‍♂️</code>\n\n'
-            '2-<code>بیوگرافی🗨️</code>\n\n'
-            '3-<code> اصطلاحات انگلیسی🔠</code>\n\n'
-            '4-<code> جرعت حقیقت❓</code>\n\n'
-            '5-<code> جوک😄</code>\n\n'
-            '6-<code>فونت اسم♍</code>\n\n'
-            '7-<code> زبان هخامنشی𐎠</code>\n\n'
-            '8-<code> دانستنی⁉️</code>\n\n'
-            '9-<code> ارتباط با ما📞</code>\n\n'
-            '<b>متن‌ها به صورت مونو هستند، برای کپی روی متن بزنید</b>',
-            parse_mode="HTML")
-        bot.reply_to(message, 'لیست قابلیت‌های ربات ارسال شد')
+        bot.reply_to(message, 'برای استفاده از امکانات مدیریتی، ربات را به گروه اضافه و ادمین کنید.')
 
     elif text == 'ارتباط با ما📞':
         bot.reply_to(message, 'آیدی سازنده ربات: @AliamA7931')
 
+    elif text == 'ربات':
+        username = message.from_user.username or first_name
+        bot.send_message(chat_id, f'جانم @{username}، برای شروع بنویس «شروع»', parse_mode="HTML")
+
     elif text in ['سلام', 'سلام خوبی', 'خوبی', 'خوب هستی', 'چطوری']:
-        bot.reply_to(message, 'سلام! خوبی؟ چطور می‌تونم کمکت کنم؟')
+        bot.reply_to(message, 'سلام! حالت چطوره؟')
 
     elif text == 'چه خبرا':
-        bot.reply_to(message, 'خبر سلامتیت، تو چه خبر؟')
-
-    elif text == 'منم سلامتی خبری نیست':
-        bot.reply_to(message, 'آها، خدا رو شکر')
-
-    elif text == 'خبر خیر سلامتی':
-        bot.reply_to(message, 'همیشه سلامت باشی')
+        bot.reply_to(message, 'خبر سلامتیت، خودت چه خبر؟')
 
     elif text in ['فدات', 'فدابشم']:
-        bot.reply_to(message, 'قربونت عزیز')
+        bot.reply_to(message, 'قربونت عزیز!')
 
     elif text in ['خداحافظ', 'بای']:
         bot.reply_to(message, 'خدانگهدار!')
 
-    elif text == 'کجایی':
-        bot.reply_to(message, 'تو تلگرام منتظرم که باهات حرف بزنم!')
-
-    elif text == 'اهل کجایی':
-        bot.reply_to(message, 'از سیاره ربات‌ها اینم شد سوال!')
-
-    elif text == 'رباط':
-        bot.reply_to(message, 'معلم ادبیاتت کی بود؟ زنده‌اش می‌خوام!')
-
-    elif text == 'چیکار میکنی':
-        bot.reply_to(message, 'مثل بقیه رباتا، گوش به فرمانم!')
+    elif text in ['کجایی', 'اهل کجایی']:
+        bot.reply_to(message, 'من از سیاره ربات‌ها اومدم!')
 
     elif text == 'اسمت چیه':
         bot.reply_to(message, 'اسمم علی بات🤖 هست')
@@ -533,26 +508,12 @@ def option_messages(message):
     elif text == 'درود':
         bot.reply_to(message, 'درود بر تو گل🌹')
 
-    elif text == 'ربات':
-        username = message.from_user.username or name
-        Bot_Response = f'جانم @{username}، کارم داشتی؟\n\n🔸برای ارتباط با من، کلمه <b> «شروع» </b> رو ارسال کن'
-        bot.send_message(message.chat.id, Bot_Response, parse_mode="HTML")
-
-    # مازندرانی
-    elif text == 'سلام خاری':
-        bot.reply_to(message, 'خارمه ته خاری')
-
-    elif text == 'خاری':
-        bot.reply_to(message, 'اره ته چیتی هستی؟')
-
-    elif text == 'اره خارمه':
-        bot.reply_to(message, 'خداره شکر')
-
-    elif text == 'بد نیمه':
-        bot.reply_to(message, 'خار بووشی')
+    elif text in ['سلام خاری', 'خاری', 'اره خارمه', 'بد نیمه']:
+        bot.reply_to(message, 'خار بووشی!')
 
     elif text == 'چه خبر':
         bot.reply_to(message, 'سلامتی ته چه خبر')
+
 
     elif text == 'منم سلامتی خبری نیه':
         bot.reply_to(message, ' آها همیشه سلامت بوشی')
@@ -603,3 +564,5 @@ def option_messages(message):
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # Render به PORT مقدار می‌ده
     app.run(host='0.0.0.0', port=port)
+
+#
