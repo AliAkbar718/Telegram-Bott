@@ -46,7 +46,7 @@ def handle_text(message):
     original = message.text
     converted = convert_to_cuneiform(original)
     bot.reply_to(message, f"متن میخی:\n{converted}")   
-    bot.send_message(message.chat.id, 'برای اینکه متن جدیدی را وارد کنید\n\nمجددا کلمه <b>زبان هخامنشی</b>را ارسال کنید', parse_mode="HTML")
+    bot.send_message(message.chat.id, 'برای اینکه متن جدیدی را وارد کنید\n\nمجددا کلمه <b>زبان هخامنشی</b> را ارسال کنید ', parse_mode="HTML")
        
 
 user_warnings = {}
@@ -261,7 +261,7 @@ def handle_all_messages(message):
 
     elif text == 'ربات':
         username = message.from_user.username or first_name
-        bot.send_message(chat_id, f'جانم @{username}\n\n  برای اطلاع از قابلیت هام کلمه رو تایپ کن🔸<b>«لیست»</b>' , parse_mode="HTML")
+        bot.send_message(chat_id, f'جانم @{username}\n\n 🔸 برای اطلاع از قابلیت هام کلمه <b>«لیست»</b> رو تایپ کن' , parse_mode="HTML")
 
     elif text in ['سلام خوبی', 'خوبی', 'خوب هستی', 'چطوری']:
         bot.reply_to(message, 'سلام خوبم حال خودت خوبه؟')
@@ -324,7 +324,7 @@ def handle_all_messages(message):
         bot.reply_to(message, 'به سلامت شه هوا ره دار')
         
     elif text == 'بات':
-      bot.send_message(chat_id, f'جان @{message.from_user.username} مه ره کار داشتی؟\n\n 🔸برای اطلاع داشتن از مه قابلیت کلمه «لیست» ره راهی هاکان', parse_mode="HTML")
+      bot.send_message(chat_id, f'جان @{message.from_user.username} مه ره کار داشتی؟\n\n 🔸 برای اطلاع داشتن از مه قابلیت کلمه «لیست» ره راهی هاکان', parse_mode="HTML")
 
     elif text == 'کیر':
         bot.set_message_reaction(chat_id=chat_id, message_id=message.message_id, reaction=[types.ReactionTypeEmoji(emoji='🖕')])
@@ -354,7 +354,7 @@ def handle_all_messages(message):
                 '🔠-<code> اصطلاحات انگلیسی</code>\n\n'
                 '❓-<code> جرعت حقیقت</code>\n\n'
                 '😄-<code> جوک</code>\n\n'
-                '<code>زبان هخامنشی</code>-𐎠\n\n'
+                '   𐎠-<code>زبان هخامنشی</code>\n\n'
                 '⁉️-<code> دانستنی</code>\n\n'
                 '📞-<code> ارتباط با ما</code>\n\n'
                 '<b>برای کپی، روی متن‌ها بزن</b>', parse_mode="HTML")
