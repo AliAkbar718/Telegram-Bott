@@ -220,7 +220,6 @@ def handle_all_messages(message):
     user_id = message.from_user.id
     text = message.text.lower().strip()
     first_name = message.from_user.first_name
-    user_name = message.from_user.username
 
     # جلوگيری از درگیری با دستورات مدیریتی
     if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین']:
@@ -338,9 +337,9 @@ def handle_all_messages(message):
                 bot.delete_message(chat_id, message.message_id)
                 user_warnings[user_id] = user_warnings.get(user_id, 0) + 1
                 if user_warnings[user_id] == 1:
-                    bot.send_message(chat_id, f"⚠️ کاربر{user_name}@ (ارسال لینک 1 از 2)\n\nلینک ممنوع هست🚫 ")
+                    bot.send_message(chat_id, f"⚠️ کاربر{message.from_user.username}@ (ارسال لینک 1 از 2)\n\nلینک ممنوع هست🚫 ")
                 elif user_warnings[user_id] >= 2:
-                    bot.send_message(chat_id, f"⛔️ @کاربر{user_name} حذف شد (ارسال لینک 2 از 2)")
+                    bot.send_message(chat_id, f"⛔️ کاربر{message.from_user.username}@ حذف شد (ارسال لینک 2 از 2)")
                     bot.ban_chat_member(chat_id, user_id)
             except:
                 pass
