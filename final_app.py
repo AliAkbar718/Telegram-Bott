@@ -339,7 +339,7 @@ def handle_all_messages(message):
                 if user_warnings[user_id] == 1:
                     bot.send_message(chat_id, f"⚠️ کاربر @{message.from_user.username}\n (ارسال لینک 1 از 2)\n\nلینک ممنوع هست🚫 ")
                 elif user_warnings[user_id] >= 2:
-                    bot.send_message(chat_id, f"⛔️ کاربر @{message.from_user.username} حذف شد\n (ارسال لینک 2 از 2)")
+                    bot.send_message(chat_id, f"⛔️ کاربر @{message.from_user.username}\n (ارسال لینک 2 از 2)\n\nحذف شد🚮")
                     bot.ban_chat_member(chat_id, user_id)
             except:
                 pass
