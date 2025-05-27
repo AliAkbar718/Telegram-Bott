@@ -120,26 +120,31 @@ def handle_all_messages(message):
 
 # -------------------- قابلیت‌های مدیریتی --------------------
 
-
-@bot.message_handler(func=lambda m: m.text == 'پین')
+# پین پیام
+@bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('پین'))
 def pin(m):
+    print("دستور پین اجرا شد:", m.text)
     if is_admin(m.chat.id, m.from_user.id):
         if m.reply_to_message:
             bot.pin_chat_message(m.chat.id, m.reply_to_message.id)
             bot.reply_to(m, "پیام پین شد.")
         else:
-            bot.reply_to(m, "باید روی پیام ریپلای کنی.")
+            bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
     else:
-        bot.reply_to(m, "فقط ادمین‌ها اجازه دارن پین کنن.")
+        bot.reply_to(m, "فقط ادمین‌ها می‌تونن پین کنن.")
 
-@bot.message_handler(func=lambda m: m.text == 'حذف پین')
+# حذف پین
+@bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('حذف پین'))
 def unpin(m):
+    print("دستور حذف پین اجرا شد:", m.text)
     if is_admin(m.chat.id, m.from_user.id):
         bot.unpin_chat_message(m.chat.id)
-        bot.reply_to(m, "پین حذف شد.")
+        bot.reply_to(m, "پین پیام حذف شد.")
 
-@bot.message_handler(func=lambda m: m.text == 'بن')
+# بن کاربر
+@bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('بن'))
 def ban(m):
+    print("دستور بن اجرا شد:", m.text)
     if is_admin(m.chat.id, m.from_user.id):
         if m.reply_to_message:
             bot.ban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
@@ -147,15 +152,19 @@ def ban(m):
         else:
             bot.reply_to(m, "روی پیام کاربر ریپلای کن.")
 
-@bot.message_handler(func=lambda m: m.text == 'حذف بن')
+# حذف بن
+@bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('حذف بن'))
 def unban(m):
+    print("دستور حذف بن اجرا شد:", m.text)
     if is_admin(m.chat.id, m.from_user.id):
         if m.reply_to_message:
             bot.unban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
-            bot.reply_to(m, "کاربر آزاد شد.")
+            bot.reply_to(m, "کاربر از بن خارج شد.")
 
-@bot.message_handler(func=lambda m: m.text == 'سکوت')
+# سکوت
+@bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('سکوت'))
 def restrict(m):
+    print("دستور سکوت اجرا شد:", m.text)
     if is_admin(m.chat.id, m.from_user.id):
         if m.reply_to_message:
             bot.restrict_chat_member(
@@ -165,8 +174,10 @@ def restrict(m):
             )
             bot.reply_to(m, "کاربر سکوت شد.")
 
-@bot.message_handler(func=lambda m: m.text == 'حذف سکوت')
+# حذف سکوت
+@bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('حذف سکوت'))
 def unrestrict(m):
+    print("دستور حذف سکوت اجرا شد:", m.text)
     if is_admin(m.chat.id, m.from_user.id):
         if m.reply_to_message:
             bot.restrict_chat_member(
@@ -176,8 +187,10 @@ def unrestrict(m):
             )
             bot.reply_to(m, "سکوت کاربر برداشته شد.")
 
-@bot.message_handler(func=lambda m: m.text == 'افزودن ادمین')
+# افزودن ادمین
+@bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('افزودن ادمین'))
 def promote(m):
+    print("دستور افزودن ادمین اجرا شد:", m.text)
     if is_admin(m.chat.id, m.from_user.id):
         if m.reply_to_message:
             bot.promote_chat_member(
@@ -189,10 +202,12 @@ def promote(m):
                 can_pin_messages=True,
                 can_promote_members=True
             )
-            bot.reply_to(m, "کاربر ادمین شد.")
+            bot.reply_to(m, "کاربر به ادمین ارتقا یافت.")
 
-@bot.message_handler(func=lambda m: m.text == 'حذف ادمین')
+# حذف ادمین
+@bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('حذف ادمین'))
 def demote(m):
+    print("دستور حذف ادمین اجرا شد:", m.text)
     if is_admin(m.chat.id, m.from_user.id):
         if m.reply_to_message:
             bot.promote_chat_member(
@@ -205,7 +220,6 @@ def demote(m):
                 can_promote_members=False
             )
             bot.reply_to(m, "ادمین حذف شد.")
-
 
 
 @app.route(WEBHOOK_SECRET_PATH, methods=['POST'])
