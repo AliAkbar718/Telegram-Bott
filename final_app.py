@@ -28,9 +28,6 @@ WEBHOOK_SECRET_PATH = '/webhook'
 
 user_warnings = {}
 
-
-
-# پین پیام
 @bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('پین'))
 def pin(m):
     print("دستور پین اجرا شد:", m.text)
@@ -39,9 +36,9 @@ def pin(m):
             bot.pin_chat_message(m.chat.id, m.reply_to_message.id)
             bot.reply_to(m, "پیام پین شد.")
         else:
-            bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
+            bot.reply_to(m, "لطفاً روی پیام ریپلای کن")
     else:
-        bot.reply_to(m, "فقط ادمین‌ها می‌تونن پین کنن.")
+        bot.reply_to(m, "فقط ادمین‌ها می‌تونن پین کنن")
 
 # حذف پین
 @bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('حذف پین'))
@@ -50,6 +47,9 @@ def unpin(m):
     if is_admin(m.chat.id, m.from_user.id):
         bot.unpin_chat_message(m.chat.id)
         bot.reply_to(m, "پین پیام حذف شد.")
+    else:
+            bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
+  
 
 # بن کاربر
 @bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('بن'))
@@ -58,9 +58,9 @@ def ban(m):
     if is_admin(m.chat.id, m.from_user.id):
         if m.reply_to_message:
             bot.ban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
-            bot.reply_to(m, f"کاربر {m.reply_to_message.from_user.first_name} بن شد.")
+            bot.reply_to(m, f"کاربر {m.reply_to_message.from_user.first_name} بن شد")
         else:
-            bot.reply_to(m, "روی پیام کاربر ریپلای کن.")
+            bot.reply_to(m, "روی پیام کاربر ریپلای کن")
 
 # حذف بن
 @bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('حذف بن'))
@@ -69,7 +69,9 @@ def unban(m):
     if is_admin(m.chat.id, m.from_user.id):
         if m.reply_to_message:
             bot.unban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
-            bot.reply_to(m, "کاربر از بن خارج شد.")
+            bot.reply_to(m, "کاربر از بن خارج شد")
+        else:
+            bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
 
 # سکوت
 @bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('سکوت'))
@@ -83,6 +85,9 @@ def restrict(m):
                 permissions=types.ChatPermissions(can_send_messages=False)
             )
             bot.reply_to(m, "کاربر سکوت شد.")
+        else:
+           bot.reply_to(m, "روی پیام کاربر ریپلای کن")
+   
 
 # حذف سکوت
 @bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('حذف سکوت'))
@@ -95,7 +100,10 @@ def unrestrict(m):
                 m.reply_to_message.from_user.id,
                 permissions=types.ChatPermissions(can_send_messages=True)
             )
-            bot.reply_to(m, "سکوت کاربر برداشته شد.")
+            bot.reply_to(m, "سکوت کاربر برداشته شد")
+        else:
+            bot.reply_to(m, "روی پیام کاربر ریپلای کن")
+
 
 # افزودن ادمین
 @bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('افزودن ادمین'))
@@ -112,7 +120,9 @@ def promote(m):
                 can_pin_messages=True,
                 can_promote_members=True
             )
-            bot.reply_to(m, "کاربر به ادمین ارتقا یافت.")
+            bot.reply_to(m, "کاربر به ادمین ارتقا یافت")
+        else:
+            bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
 
 # حذف ادمین
 @bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('حذف ادمین'))
@@ -129,7 +139,11 @@ def demote(m):
                 can_pin_messages=False,
                 can_promote_members=False
             )
-            bot.reply_to(m, "ادمین حذف شد.")
+            bot.reply_to(m, "ادمین برکنار شد")
+        else:
+            bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
+
+        
 # -------------------- توابع کمکی --------------------
 
 def contains_link(text):
@@ -220,8 +234,52 @@ def handle_all_messages(message):
             join_btn.add(types.InlineKeyboardButton("عضویت در کانال✅", url="https://t.me/rap_family1"))
             bot.send_message(chat_id, "عضو کانال نیستی. اول عضو شو:", reply_markup=join_btn)
 
-# -------------------- قابلیت‌های مدیریتی --------------------
+weekday_names = {
+    'Saturday': 'شنبه',
+    'Sunday': 'یک‌شنبه',
+    'Monday': 'دوشنبه',
+    'Tuesday': 'سه‌شنبه',
+    'Wednesday': 'چهارشنبه',
+    'Thursday': 'پنج‌شنبه',
+    'Friday': 'جمعه'
+}
 
+month_names = {
+    'Farvardin': 'فروردین',
+    'Ordibehesht': 'اردیبهشت',
+    'Khordad': 'خرداد',
+    'Tir': 'تیر',
+    'Mordad': 'مرداد',
+    'Shahrivar': 'شهریور',
+    'Mehr': 'مهر',
+    'Aban': 'آبان',
+    'Azar': 'آذر',
+    'Dey': 'دی',
+    'Bahman': 'بهمن',
+    'Esfand': 'اسفند'
+}
+
+@bot.message_handler(content_types=['new_chat_members'])
+def welcome_new_user(message):
+    for new_member in message.new_chat_members:
+        iran_time = datetime.now(pytz.timezone('Asia/Tehran'))
+        shamsi_time = jdatetime.datetime.fromgregorian(datetime=iran_time)
+
+        weekday_en = shamsi_time.strftime('%A')     # مثلاً Saturday
+        month_en = shamsi_time.strftime('%B')       # مثلاً Farvardin
+
+        weekday_fa = weekday_names.get(weekday_en, weekday_en)
+        month_fa = month_names.get(month_en, month_en)
+
+        date_str = f"{shamsi_time.day} {month_fa} {shamsi_time.year}"
+        time_str = shamsi_time.strftime('%H:%M:%S')
+        response = f' {weekday_fa} {date_str} \n\nزمان: {time_str}  '
+        bot.send_message(message.chat.id, f'درود به گپمون خوش اومدی✨❤️{message.from_user.first_name}\n\nامروز{response}')
+
+
+@bot.message_handler(content_types=['left_chat_member'])
+def handle_left_member(message):
+    bot.reply_to(message, "به سلامت👋")
 
 
 
