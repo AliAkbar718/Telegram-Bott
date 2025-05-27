@@ -14,8 +14,7 @@ import pytz
 
 
 TOKEN = '7579645804:AAHt5O6hHdXtdigsQQ-WMGiIm7cJexySTVc'
-CHANNEL_ID =  -1002317714854
-
+CHANNEL_USERNAME = '@rap_family1' 
 bot = telebot.TeleBot(TOKEN)
 
 WEBHOOK_URL = 'https://telegram-bott-xuhm.onrender.com/webhook'
@@ -25,40 +24,170 @@ bot.set_webhook(url=WEBHOOK_URL)
 app = Flask(__name__)
 
 WEBHOOK_SECRET_PATH = '/webhook'  
+ 
 
+user_warnings = {}
 
+def contains_link(text):
+    if not text:
+        return False
+    return any(word in text.lower() for word in ['http', 'https', 't.me', '@'])
 
-# بررسی عضویت
+def is_admin(chat_id, user_id):
+    try:
+        member = bot.get_chat_member(chat_id, user_id)
+        return member.status in ['administrator', 'creator']
+    except:
+        return False
+
 def is_user_member(user_id):
     try:
-        member = bot.get_chat_member(CHANNEL_ID, user_id)
+        member = bot.get_chat_member(CHANNEL_USERNAME, user_id)
         return member.status in ['member', 'administrator', 'creator']
     except:
         return False
 
-# استارت
+# /start
 @bot.message_handler(commands=['start'])
 def start(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.add('لیست')
-    if is_user_member(message):
-        bot.send_message(message.chat.id, "سلام من علی بات🤖 هستم!\n\nبرای مشاهده قابلیت‌هام روی دکمه «لیست» بزن یا تایپ کن", reply_markup=markup)
-    else:
-        join_btn = types.InlineKeyboardMarkup()
-        join_btn.add(types.InlineKeyboardButton("عضویت در کانال✅", url="https://t.me/rap_family1"))  # لینک کانالتو بذار
-        bot.send_message(message.chat.id, "توی کانال عضو نیستی ❌\n\n برای استفاده از قابلیت ربات باید عضو کانال بشی\n\n ", reply_markup=join_btn)
-        bot.send_message(message.chat.id, "وقتی عضو شدی روی دکمه «لیست» بزن:", reply_markup=markup)
-
-# لیست
-@bot.message_handler(func=lambda msg: msg.text == 'لیست')
-def send_features(message):
-   
-    if is_user_member(message):
-        bot.send_message(message.chat.id, '-<code> مدیریت گروه🤵‍♂️</code>\n\n-<code> بیوگرافی🗨️</code>\n\n-<code> اصطلاحات انگلیسی🔠</code>\n\n-<code> جرعت حقیقت❓</code>\n\n-<code> جوک😄</code>\n\n-<code> فونت اسم♍</code>\n\n-<code> زبان هخامنشی𐎠</code>\n\n-<code> دانستنی⁉️</code>\n\n-<code> ارتباط با ما📞</code>\n\n<b>متن ها به صورت مونو هستند روی متن بزنید کپی میشوند</b>', parse_mode="HTML")
+    if is_user_member(message.from_user.id):
+        bot.send_message(message.chat.id,
+            "سلام من علی بات🤖 هستم!\n\nبرای مشاهده قابلیت‌هام روی دکمه «لیست» بزن یا تایپ کن",
+            reply_markup=markup)
     else:
         join_btn = types.InlineKeyboardMarkup()
         join_btn.add(types.InlineKeyboardButton("عضویت در کانال✅", url="https://t.me/rap_family1"))
-        bot.send_message(message.chat.id, "هنوز عضو کانال نیستی❌\n\nبرای استفاده از ربات ابتدا عضو شو.", reply_markup=join_btn)
+        bot.send_message(message.chat.id,
+            "توی کانال عضو نیستی ❌\n\nبرای استفاده از قابلیت ربات باید عضو کانال بشی",
+            reply_markup=join_btn)
+        bot.send_message(message.chat.id, "وقتی عضو شدی، روی دکمه «لیست» بزن:", reply_markup=markup)
+
+# لیست قابلیت‌ها
+@bot.message_handler(func=lambda msg: msg.text == 'لیست')
+def send_features(message):
+    if is_user_member(message.from_user.id):
+        bot.send_message(message.chat.id,
+            '-<code> مدیریت گروه🤵‍♂️</code>\n\n'
+            '-<code> بیوگرافی🗨️</code>\n\n'
+            '-<code> اصطلاحات انگلیسی🔠</code>\n\n'
+            '-<code> جرعت حقیقت❓</code>\n\n'
+            '-<code> جوک😄</code>\n\n'
+            '-<code> فونت اسم♍</code>\n\n'
+            '-<code> زبان هخامنشی𐎠</code>\n\n'
+            '-<code> دانستنی⁉️</code>\n\n'
+            '-<code> ارتباط با ما📞</code>\n\n'
+            '<b>متن‌ها به صورت مونو هستند، روی متن بزنید تا کپی بشن.</b>',
+            parse_mode="HTML")
+    else:
+        join_btn = types.InlineKeyboardMarkup()
+        join_btn.add(types.InlineKeyboardButton("عضویت در کانال✅", url="https://t.me/rap_family1"))
+        bot.send_message(message.chat.id,
+            "هنوز عضو کانال نیستی❌\n\nبرای استفاده از ربات ابتدا عضو شو.", reply_markup=join_btn)
+
+# مدیریت لینک و هشدار
+@bot.message_handler(content_types=['text'])
+def handle_all_messages(message):
+    chat_id = message.chat.id
+    user_id = message.from_user.id
+    text = message.text.lower().strip()
+    first_name = message.from_user.first_name
+
+    if contains_link(text):
+        if not is_admin(chat_id, user_id):
+            try:
+                bot.delete_message(chat_id, message.message_id)
+                user_warnings[user_id] = user_warnings.get(user_id, 0) + 1
+                if user_warnings[user_id] == 1:
+                    bot.send_message(chat_id, f"⚠️ کاربر {first_name} ارسال لینک 1 از 2 — در صورت تکرار حذف خواهید شد.")
+                elif user_warnings[user_id] >= 2:
+                    bot.send_message(chat_id, f"⛔️ کاربر {first_name} ارسال لینک 2 از 2 — شما از گروه حذف شدید.")
+                    bot.ban_chat_member(chat_id, user_id)
+            except Exception as e:
+                print(f"خطا در حذف لینک: {e}")
+        return
+
+# قابلیت‌های مدیریتی
+@bot.message_handler(func=lambda m: m.text == 'پین')
+def pin(m):
+    if not is_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن پیام رو پین کنن.')
+    if m.reply_to_message:
+        bot.pin_chat_message(m.chat.id, m.reply_to_message.id)
+        bot.reply_to(m, "پیام پین شد.")
+    else:
+        bot.reply_to(m, "لطفاً روی پیام موردنظر ریپلای کنید.")
+
+@bot.message_handler(func=lambda m: m.text == 'حذف پین')
+def unpin(m):
+    if not is_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن پین رو حذف کنن.')
+    bot.unpin_chat_message(m.chat.id)
+    bot.reply_to(m, 'پین حذف شد.')
+
+@bot.message_handler(func=lambda m: m.text == 'افزودن ادمین')
+def promote(m):
+    if not is_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین می‌تونه ادمین اضافه کنه.')
+    if not m.reply_to_message:
+        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
+    bot.promote_chat_member(m.chat.id, m.reply_to_message.from_user.id,
+        can_manage_chat=True, can_delete_messages=True,
+        can_invite_users=True, can_pin_messages=True,
+        can_promote_members=True)
+    bot.reply_to(m, 'کاربر به ادمین ارتقا یافت.')
+
+@bot.message_handler(func=lambda m: m.text == 'حذف ادمین')
+def demote(m):
+    if not is_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین می‌تونه ادمین رو حذف کنه.')
+    if not m.reply_to_message:
+        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
+    bot.promote_chat_member(m.chat.id, m.reply_to_message.from_user.id,
+        can_manage_chat=False, can_delete_messages=False,
+        can_invite_users=False, can_pin_messages=False,
+        can_promote_members=False)
+    bot.reply_to(m, 'ادمین حذف شد.')
+
+@bot.message_handler(func=lambda m: m.text == 'بن')
+def ban(m):
+    if not is_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن بن کنن.')
+    if not m.reply_to_message:
+        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
+    bot.ban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
+    bot.reply_to(m, f"کاربر {m.reply_to_message.from_user.first_name} بن شد.")
+
+@bot.message_handler(func=lambda m: m.text == 'حذف بن')
+def unban(m):
+    if not is_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن این کارو بکنن.')
+    if not m.reply_to_message:
+        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
+    bot.unban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
+    bot.reply_to(m, 'کاربر از بن خارج شد.')
+
+@bot.message_handler(func=lambda m: m.text == 'سکوت')
+def restrict(m):
+    if not is_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن سکوت کنن.')
+    if not m.reply_to_message:
+        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
+    bot.restrict_chat_member(m.chat.id, m.reply_to_message.from_user.id,
+        permissions=telebot.types.ChatPermissions(can_send_messages=False))
+    bot.reply_to(m, 'کاربر سکوت شد.')
+
+@bot.message_handler(func=lambda m: m.text == 'حذف سکوت')
+def derestrict(m):
+    if not is_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن سکوت رو بردارن.')
+    if not m.reply_to_message:
+        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
+    bot.restrict_chat_member(m.chat.id, m.reply_to_message.from_user.id,
+        permissions=telebot.types.ChatPermissions(can_send_messages=True))
+    bot.reply_to(m, 'سکوت کاربر برداشته شد.')
+
 
 
 
@@ -163,264 +292,9 @@ def welcome_new_user(message):
         bot.send_message(message.chat.id, f'درود به گپمون خوش اومدی✨❤️{message.from_user.first_name}\n\nامروز{response}')
 
 
-
-def is_user_admin(chat_id, user_id):
-    try:
-        admins = bot.get_chat_administrators(chat_id)
-        for admin in admins:
-            if admin.user.id == user_id:
-                return True
-        return False
-    except Exception as e:
-        print(f"خطا در بررسی مدیر بودن: {e}")
-        return False
-
-
-
-
-# دیکشنری برای شمارش تخلف‌ها
-user_warnings = {}
-
-# تشخیص لینک در متن پیام
-def contains_link(text):
-    if not text:
-        return False
-    return any(word in text.lower() for word in ['http', 'https', 't.me', '@'])
-
-# بررسی اینکه آیا کاربر ادمین هست یا نه
-def is_admin(chat_id, user_id):
-    try:
-        member = bot.get_chat_member(chat_id, user_id)
-        return member.status in ['administrator', 'creator']
-    except:
-        return False
-
-@bot.message_handler(func=lambda m: True, content_types=['text'])
-def handle_message(message):
-    chat_id = message.chat.id
-    user_id = message.from_user.id
-    first_name = message.from_user.first_name
-
-    if contains_link(message.text):
-        if is_admin(chat_id, user_id):
-            return
-
-        try:
-            # حذف پیام
-            bot.delete_message(chat_id, message.message_id)
-
-            # افزایش شمارش تخلف
-            user_warnings[user_id] = user_warnings.get(user_id, 0) + 1
-            warn_count = user_warnings[user_id]
-
-            if warn_count == 1:
-                bot.send_message(
-                    chat_id,
-                    f"⚠️ کاربر {first_name}\nارسال لینک 1 از 2\nلطفاً از ارسال لینک خودداری کنید. در صورت تکرار حذف خواهید شد."
-                )
-            elif warn_count >= 2:
-                bot.send_message(
-                    chat_id,
-                    f"⛔️ کاربر {first_name}\nارسال لینک 2 از 2\nشما از گروه حذف شدید."
-                )
-                bot.ban_chat_member(chat_id, user_id)
-
-        except Exception as e:
-            print(f"خطا در هشدار یا حذف: {e}")
-
-
 @bot.message_handler(content_types=['left_chat_member'])
 def handle_left_member(message):
     bot.reply_to(message, "به سلامت👋")
-
-
-# بررسی ادمین بودن
-def is_user_admin(chat_id, user_id):
-    try:
-        admins = bot.get_chat_administrators(chat_id)
-        for admin in admins:
-            if admin.user.id == user_id:
-                return True
-        return False
-    except Exception as e:
-        print(f"خطا در بررسی ادمین بودن: {e}")
-        return False
-
-# پین پیام
-@bot.message_handler(func=lambda m: m.text == 'پین')
-def pin(m):
-    if not is_user_admin(m.chat.id, m.from_user.id):
-        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن پیام رو پین کنن.')
-
-    if m.reply_to_message:
-        bot.pin_chat_message(m.chat.id, m.reply_to_message.id)
-        bot.reply_to(m, "پیام پین شد.")
-    else:
-        bot.reply_to(m, "لطفاً روی پیام موردنظر ریپلای کنید.")
-
-# حذف پین
-@bot.message_handler(func=lambda m: m.text == 'حذف پین')
-def unpin(m):
-    if not is_user_admin(m.chat.id, m.from_user.id):
-        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن پین رو حذف کنن.')
-
-    bot.unpin_chat_message(m.chat.id)
-    bot.reply_to(m, 'پین حذف شد.')
-
-# ادمین‌سازی
-@bot.message_handler(func=lambda m: m.text == 'افزودن ادمین')
-def promote(m):
-    if not is_user_admin(m.chat.id, m.from_user.id):
-        return bot.reply_to(m, 'فقط ادمین می‌تونه ادمین اضافه کنه.')
-
-    if not m.reply_to_message:
-        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
-
-    bot.promote_chat_member(
-        m.chat.id,
-        m.reply_to_message.from_user.id,
-        can_manage_chat=True,
-        can_delete_messages=True,
-        can_invite_users=True,
-        can_pin_messages=True,
-        can_promote_members=True,
-    )
-    bot.reply_to(m, 'کاربر به ادمین ارتقا یافت.')
-
-# برکناری ادمین
-@bot.message_handler(func=lambda m: m.text == 'حذف ادمین')
-def demote(m):
-    if not is_user_admin(m.chat.id, m.from_user.id):
-        return bot.reply_to(m, 'فقط ادمین می‌تونه ادمین رو حذف کنه.')
-
-    if not m.reply_to_message:
-        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
-
-    bot.promote_chat_member(
-        m.chat.id,
-        m.reply_to_message.from_user.id,
-        can_manage_chat=False,
-        can_delete_messages=False,
-        can_invite_users=False,
-        can_pin_messages=False,
-        can_promote_members=False,
-    )
-    bot.reply_to(m, 'ادمین حذف شد.')
-
-# بن کاربر
-@bot.message_handler(func=lambda m: m.text == 'بن')
-def ban(m):
-    if not is_user_admin(m.chat.id, m.from_user.id):
-        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن بن کنن.')
-
-    if not m.reply_to_message:
-        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
-
-    bot.ban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
-    bot.reply_to(m, f"کاربر {m.reply_to_message.from_user.first_name} بن شد.")
-
-# حذف بن
-@bot.message_handler(func=lambda m: m.text == 'حذف بن')
-def unban(m):
-    if not is_user_admin(m.chat.id, m.from_user.id):
-        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن این کارو بکنن.')
-
-    if not m.reply_to_message:
-        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
-
-    bot.unban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
-    bot.reply_to(m, 'کاربر از بن خارج شد.')
-
-# سکوت
-@bot.message_handler(func=lambda m: m.text == 'سکوت')
-def restrict(m):
-    if not is_user_admin(m.chat.id, m.from_user.id):
-        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن سکوت کنن.')
-
-    if not m.reply_to_message:
-        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
-
-    bot.restrict_chat_member(
-        m.chat.id,
-        m.reply_to_message.from_user.id,
-        permissions=telebot.types.ChatPermissions(can_send_messages=False)
-    )
-    bot.reply_to(m, 'کاربر سکوت شد.')
-
-# حذف سکوت
-@bot.message_handler(func=lambda m: m.text == 'حذف سکوت')
-def derestrict(m):
-    if not is_user_admin(m.chat.id, m.from_user.id):
-        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن سکوت رو بردارن.')
-
-    if not m.reply_to_message:
-        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
-    bot.restrict_chat_member(
-    m.chat.id,
-    m.reply_to_message.from_user.id,
-    permissions=telebot.types.ChatPermissions(can_send_messages=True)
-    )
-    bot.reply_to(m, 'سکوت کاربر برداشته شد.')
-
-
-
-
-# از اینجا به بعد رو ویرایش میکنم
-
-@bot.message_handler(func=lambda m: m.text == 'فونت اسم♍')
-def text_formatting(m):
-    bot.send_message(m.chat.id, "اسم را وارد کنید")
-    bot.register_next_step_handler(m, process_text)
-
-
-def process_text(m):
-    text = m.text
-    text1 = f"<b>➷➷☠{text}☠➶➶</b>"
-    text2 = f"<i>¯°•º¤ϟϞ҂ ♛{text}♛ ҂Ϟϟ¤º•°¯ </i>"
-    text3 = f"<ins>ıllıllı ⦳⦳{text}⦳⦳ ıllıllı</ins>"
-    text4 = f"<s>ஜ۩۞۩ஜ ♬{text}♬ ஜ۩۞۩ஜ</s>"
-    text5 = f"<code>╔╝✞ ஜ☣{text}☣ஜ ✞╚╗</code>"
-   
-
-    bot.send_message(m.chat.id, text1, parse_mode="HTML")
-    bot.send_message(m.chat.id, text2, parse_mode="HTML")
-    bot.send_message(m.chat.id, text3, parse_mode="HTML")
-    bot.send_message(m.chat.id, text4, parse_mode="HTML")
-    bot.send_message(m.chat.id, text5, parse_mode="HTML")
-   
-
-
-@bot.message_handler(func=lambda m: m.text.startswith('سکوت تایمری'))
-def mute_user(m):
-    duration = int(m.text.split()[-1])
-
-    date = datetime.datetime.now() + datetime.timedelta(minutes=duration)
-    until_date = int(date.timestamp())
-
-    bot.restrict_chat_member(
-        m.chat.id, m.reply_to_message.from_user.id,
-        until_date=until_date,
-        can_send_media_messages=False,
-        can_send_messages=False,
-        can_send_other_messages=False,
-        can_send_polls=False
-    )
-    bot.reply_to(m, f"  کاربر به مدت {duration} دقیقه سکوت شد ")
-
-
-@bot.message_handler(func=lambda m: m.text.startswith('بن تایمری'))
-def mute_user(m):
-    duration = int(m.text.split()[-1])
-
-    date = datetime.datetime.now() + datetime.timedelta(minutes=duration)
-    until_date = int(date.timestamp())
-
-    bot.ban_chat_member(
-        m.chat.id, m.reply_to_message.from_user.id,
-        until_date=until_date,
-
-    )
-    bot.reply_to(m, f"کاربر به مدت {duration} دقیقه بن شد ")
 
 
 media = []
