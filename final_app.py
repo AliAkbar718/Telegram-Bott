@@ -28,97 +28,7 @@ WEBHOOK_SECRET_PATH = '/webhook'
 
 user_warnings = {}
 
-# -------------------- توابع کمکی --------------------
 
-def contains_link(text):
-    if not text:
-        return False
-    return any(word in text.lower() for word in ['http', 'https', 't.me', '@'])
-
-def is_admin(chat_id, user_id):
-    try:
-        member = bot.get_chat_member(chat_id, user_id)
-        return member.status in ['administrator', 'creator']
-    except:
-        return False
-
-def is_user_member(user_id):
-    try:
-        member = bot.get_chat_member(CHANNEL_USERNAME, user_id)
-        return member.status in ['member', 'administrator', 'creator']
-    except:
-        return False
-
-# -------------------- /start --------------------
-
-@bot.message_handler(commands=['start'])
-def start(message):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add('لیست')
-    if is_user_member(message.from_user.id):
-        bot.send_message(
-            message.chat.id,
-            "سلام من علی بات🤖 هستم!\n\nبرای مشاهده قابلیت‌هام روی دکمه «لیست» بزن یا تایپ کن",
-            reply_markup=markup
-        )
-    else:
-        join_btn = types.InlineKeyboardMarkup()
-        join_btn.add(types.InlineKeyboardButton("عضویت در کانال✅", url="https://t.me/rap_family1"))
-        bot.send_message(
-            message.chat.id,
-            "توی کانال عضو نیستی ❌\n\nبرای استفاده از ربات اول عضو شو.",
-            reply_markup=join_btn
-        )
-        bot.send_message(message.chat.id, "وقتی عضو شدی، روی «لیست» بزن.", reply_markup=markup)
-
-# -------------------- پیام‌های عمومی --------------------
-
-@bot.message_handler(content_types=['text'])
-def handle_all_messages(message):
-    chat_id = message.chat.id
-    user_id = message.from_user.id
-    text = message.text.lower().strip()
-    first_name = message.from_user.first_name
-
-    # جلوگيری از درگیری با دستورات مدیریتی
-    if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین']:
-        return
-
-    # حذف لینک با اخطار
-    if contains_link(text):
-        if not is_admin(chat_id, user_id):
-            try:
-                bot.delete_message(chat_id, message.message_id)
-                user_warnings[user_id] = user_warnings.get(user_id, 0) + 1
-                if user_warnings[user_id] == 1:
-                    bot.send_message(chat_id, f"⚠️ {first_name} - ارسال لینک 1 از 2 (تکرار = حذف)")
-                elif user_warnings[user_id] >= 2:
-                    bot.send_message(chat_id, f"⛔️ {first_name} حذف شد (ارسال لینک 2 از 2)")
-                    bot.ban_chat_member(chat_id, user_id)
-            except:
-                pass
-        return
-
-    # پاسخ به لیست
-    if text == 'لیست':
-        if is_user_member(user_id):
-            bot.send_message(chat_id,
-                '-<code> مدیریت گروه🤵‍♂️</code>\n\n'
-                '-<code> بیوگرافی🗨️</code>\n\n'
-                '-<code> اصطلاحات انگلیسی🔠</code>\n\n'
-                '-<code> جرعت حقیقت❓</code>\n\n'
-                '-<code> جوک😄</code>\n\n'
-                '-<code> فونت اسم♍</code>\n\n'
-                '-<code> زبان هخامنشی𐎠</code>\n\n'
-                '-<code> دانستنی⁉️</code>\n\n'
-                '-<code> ارتباط با ما📞</code>\n\n'
-                '<b>برای کپی، روی متن‌ها بزن</b>', parse_mode="HTML")
-        else:
-            join_btn = types.InlineKeyboardMarkup()
-            join_btn.add(types.InlineKeyboardButton("عضویت در کانال✅", url="https://t.me/rap_family1"))
-            bot.send_message(chat_id, "عضو کانال نیستی. اول عضو شو:", reply_markup=join_btn)
-
-# -------------------- قابلیت‌های مدیریتی --------------------
 
 # پین پیام
 @bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('پین'))
@@ -220,6 +130,99 @@ def demote(m):
                 can_promote_members=False
             )
             bot.reply_to(m, "ادمین حذف شد.")
+# -------------------- توابع کمکی --------------------
+
+def contains_link(text):
+    if not text:
+        return False
+    return any(word in text.lower() for word in ['http', 'https', 't.me', '@'])
+
+def is_admin(chat_id, user_id):
+    try:
+        member = bot.get_chat_member(chat_id, user_id)
+        return member.status in ['administrator', 'creator']
+    except:
+        return False
+
+def is_user_member(user_id):
+    try:
+        member = bot.get_chat_member(CHANNEL_USERNAME, user_id)
+        return member.status in ['member', 'administrator', 'creator']
+    except:
+        return False
+
+# -------------------- /start --------------------
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add('لیست')
+    if is_user_member(message.from_user.id):
+        bot.send_message(
+            message.chat.id,
+            "سلام من علی بات🤖 هستم!\n\nبرای مشاهده قابلیت‌هام روی دکمه «لیست» بزن یا تایپ کن",
+            reply_markup=markup
+        )
+    else:
+        join_btn = types.InlineKeyboardMarkup()
+        join_btn.add(types.InlineKeyboardButton("عضویت در کانال✅", url="https://t.me/rap_family1"))
+        bot.send_message(
+            message.chat.id,
+            "توی کانال عضو نیستی ❌\n\nبرای استفاده از ربات اول عضو شو.",
+            reply_markup=join_btn
+        )
+        bot.send_message(message.chat.id, "وقتی عضو شدی، روی «لیست» بزن.", reply_markup=markup)
+
+# -------------------- پیام‌های عمومی --------------------
+
+@bot.message_handler(content_types=['text'])
+def handle_all_messages(message):
+    chat_id = message.chat.id
+    user_id = message.from_user.id
+    text = message.text.lower().strip()
+    first_name = message.from_user.first_name
+
+    # جلوگيری از درگیری با دستورات مدیریتی
+    if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین']:
+        return
+
+    # حذف لینک با اخطار
+    if contains_link(text):
+        if not is_admin(chat_id, user_id):
+            try:
+                bot.delete_message(chat_id, message.message_id)
+                user_warnings[user_id] = user_warnings.get(user_id, 0) + 1
+                if user_warnings[user_id] == 1:
+                    bot.send_message(chat_id, f"⚠️ {first_name} - ارسال لینک 1 از 2 (تکرار = حذف)")
+                elif user_warnings[user_id] >= 2:
+                    bot.send_message(chat_id, f"⛔️ {first_name} حذف شد (ارسال لینک 2 از 2)")
+                    bot.ban_chat_member(chat_id, user_id)
+            except:
+                pass
+        return
+
+    # پاسخ به لیست
+    if text == 'لیست':
+        if is_user_member(user_id):
+            bot.send_message(chat_id,
+                '-<code> مدیریت گروه🤵‍♂️</code>\n\n'
+                '-<code> بیوگرافی🗨️</code>\n\n'
+                '-<code> اصطلاحات انگلیسی🔠</code>\n\n'
+                '-<code> جرعت حقیقت❓</code>\n\n'
+                '-<code> جوک😄</code>\n\n'
+                '-<code> فونت اسم♍</code>\n\n'
+                '-<code> زبان هخامنشی𐎠</code>\n\n'
+                '-<code> دانستنی⁉️</code>\n\n'
+                '-<code> ارتباط با ما📞</code>\n\n'
+                '<b>برای کپی، روی متن‌ها بزن</b>', parse_mode="HTML")
+        else:
+            join_btn = types.InlineKeyboardMarkup()
+            join_btn.add(types.InlineKeyboardButton("عضویت در کانال✅", url="https://t.me/rap_family1"))
+            bot.send_message(chat_id, "عضو کانال نیستی. اول عضو شو:", reply_markup=join_btn)
+
+# -------------------- قابلیت‌های مدیریتی --------------------
+
+
 
 
 @app.route(WEBHOOK_SECRET_PATH, methods=['POST'])
