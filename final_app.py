@@ -354,7 +354,7 @@ def handle_all_messages(message):
                 '🔠-<code> اصطلاحات انگلیسی</code>\n\n'
                 '❓-<code> جرعت حقیقت</code>\n\n'
                 '😄-<code> جوک</code>\n\n'
-                '𐎠-<code>زبان هخامنشی</code>\n\n'
+                '<code>زبان هخامنشی</code>𐎠\n\n'
                 '⁉️-<code> دانستنی</code>\n\n'
                 '📞-<code> ارتباط با ما</code>\n\n'
                 '<b>برای کپی، روی متن‌ها بزن</b>', parse_mode="HTML")
@@ -362,6 +362,7 @@ def handle_all_messages(message):
             join_btn = types.InlineKeyboardMarkup()
             join_btn.add(types.InlineKeyboardButton("عضویت در کانال✅", url="https://t.me/rap_family1"))
             bot.send_message(chat_id, "عضو کانال نیستی. اول عضو شو:", reply_markup=join_btn)
+
 
 weekday_names = {
     'Saturday': 'شنبه',
