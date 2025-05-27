@@ -17,26 +17,15 @@ TOKEN = '7579645804:AAHt5O6hHdXtdigsQQ-WMGiIm7cJexySTVc'
 CHANNEL_USERNAME = '@rap_family1' 
 bot = telebot.TeleBot(TOKEN)
 
+app = Flask(__name__)
+
 WEBHOOK_URL = 'https://telegram-bott-xuhm.onrender.com/webhook'
 bot.remove_webhook()
 bot.set_webhook(url=WEBHOOK_URL)
 
-app = Flask(__name__)
-
 WEBHOOK_SECRET_PATH = '/webhook'  
  
 
-
-@app.route(WEBHOOK_SECRET_PATH, methods=['POST'])
-def webhook():
-    update = telebot.types.Update.de_json(request.data.decode('utf-8'))
-    bot.process_new_updates([update])
-    return 'ok', 200
-
-@app.route('/', methods=['GET'])
-def index():
-    return 'ربات فعال است', 200
-   
 user_warnings = {}
 
 # -------------------- توابع کمکی --------------------
@@ -216,6 +205,20 @@ def demote(m):
                 can_promote_members=False
             )
             bot.reply_to(m, "ادمین حذف شد.")
+
+
+
+@app.route(WEBHOOK_SECRET_PATH, methods=['POST'])
+def webhook():
+    update = telebot.types.Update.de_json(request.data.decode('utf-8'))
+    bot.process_new_updates([update])
+    return 'ok', 200
+
+@app.route('/', methods=['GET'])
+def index():
+    return 'ربات فعال است', 200
+   
+
 
 
         
