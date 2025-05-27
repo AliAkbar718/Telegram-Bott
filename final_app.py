@@ -39,27 +39,26 @@ def is_user_member(user_id):
 # استارت
 @bot.message_handler(commands=['start'])
 def start(message):
-    user_id = message.from_user.id
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.add('لیست')
-    if is_user_member(user_id):
-        bot.send_message(user_id, "سلام من علی بات🤖 هستم!\n\nبرای مشاهده قابلیت‌هام روی دکمه «لیست» بزن یا تایپ کن", reply_markup=markup)
+    if is_user_member(message):
+        bot.send_message(message.chat.id, "سلام من علی بات🤖 هستم!\n\nبرای مشاهده قابلیت‌هام روی دکمه «لیست» بزن یا تایپ کن", reply_markup=markup)
     else:
         join_btn = types.InlineKeyboardMarkup()
         join_btn.add(types.InlineKeyboardButton("عضویت در کانال✅", url="https://t.me/rap_family1"))  # لینک کانالتو بذار
-        bot.send_message(user_id, "توی کانال عضو نیستی ❌\n\n برای استفاده از قابلیت ربات باید عضو کانال بشی\n\n ", reply_markup=join_btn)
-        bot.send_message(user_id, "وقتی عضو شدی روی دکمه «لیست» بزن:", reply_markup=markup)
+        bot.send_message(message.chat.id, "توی کانال عضو نیستی ❌\n\n برای استفاده از قابلیت ربات باید عضو کانال بشی\n\n ", reply_markup=join_btn)
+        bot.send_message(message.chat.id, "وقتی عضو شدی روی دکمه «لیست» بزن:", reply_markup=markup)
 
 # لیست
 @bot.message_handler(func=lambda msg: msg.text == 'لیست')
 def send_features(message):
-    user_id = message.from_user.id
-    if is_user_member(user_id):
-        bot.send_message(user_id, '-<code> مدیریت گروه🤵‍♂️</code>\n\n-<code> بیوگرافی🗨️</code>\n\n-<code> اصطلاحات انگلیسی🔠</code>\n\n-<code> جرعت حقیقت❓</code>\n\n-<code> جوک😄</code>\n\n-<code> فونت اسم♍</code>\n\n-<code> زبان هخامنشی𐎠</code>\n\n-<code> دانستنی⁉️</code>\n\n-<code> ارتباط با ما📞</code>\n\n<b>متن ها به صورت مونو هستند روی متن بزنید کپی میشوند</b>', parse_mode="HTML")
+   
+    if is_user_member(message):
+        bot.send_message(message.chat.id, '-<code> مدیریت گروه🤵‍♂️</code>\n\n-<code> بیوگرافی🗨️</code>\n\n-<code> اصطلاحات انگلیسی🔠</code>\n\n-<code> جرعت حقیقت❓</code>\n\n-<code> جوک😄</code>\n\n-<code> فونت اسم♍</code>\n\n-<code> زبان هخامنشی𐎠</code>\n\n-<code> دانستنی⁉️</code>\n\n-<code> ارتباط با ما📞</code>\n\n<b>متن ها به صورت مونو هستند روی متن بزنید کپی میشوند</b>', parse_mode="HTML")
     else:
         join_btn = types.InlineKeyboardMarkup()
         join_btn.add(types.InlineKeyboardButton("عضویت در کانال✅", url="https://t.me/rap_family1"))
-        bot.send_message(user_id, "هنوز عضو کانال نیستی❌\n\nبرای استفاده از ربات ابتدا عضو شو.", reply_markup=join_btn)
+        bot.send_message(message.chat.id, "هنوز عضو کانال نیستی❌\n\nبرای استفاده از ربات ابتدا عضو شو.", reply_markup=join_btn)
 
 
 
