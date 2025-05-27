@@ -338,9 +338,9 @@ def handle_all_messages(message):
                 bot.delete_message(chat_id, message.message_id)
                 user_warnings[user_id] = user_warnings.get(user_id, 0) + 1
                 if user_warnings[user_id] == 1:
-                    bot.send_message(chat_id, f"⚠️ کاربر{user_name} - ارسال لینک 1 از 2\n\nلینک ممنوع هست🚫 ")
+                    bot.send_message(chat_id, f"⚠️ کاربر@{user_name} - (ارسال لینک 1 از 2)\n\nلینک ممنوع هست🚫 ")
                 elif user_warnings[user_id] >= 2:
-                    bot.send_message(chat_id, f"⛔️ {user_name} حذف شد (ارسال لینک 2 از 2)")
+                    bot.send_message(chat_id, f"⛔️ کاربر@{user_name} حذف شد (ارسال لینک 2 از 2)")
                     bot.ban_chat_member(chat_id, user_id)
             except:
                 pass
@@ -355,7 +355,7 @@ def handle_all_messages(message):
                 '🔠-<code> اصطلاحات انگلیسی</code>\n\n'
                 '❓-<code> جرعت حقیقت</code>\n\n'
                 '😄-<code> جوک</code>\n\n'
-                    '<code>زبان هخامنشی</code>𐎠-\n\n'
+                    '<code>زبان هخامنشی</code>-𐎠\n\n'
                 '⁉️-<code> دانستنی</code>\n\n'
                 '📞-<code> ارتباط با ما</code>\n\n'
                 '<b>برای کپی، روی متن‌ها بزن</b>', parse_mode="HTML")
