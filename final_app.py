@@ -235,115 +235,138 @@ def handle_left_member(message):
     bot.reply_to(message, "به سلامت👋")
 
 
+# بررسی ادمین بودن
+def is_user_admin(chat_id, user_id):
+    try:
+        admins = bot.get_chat_administrators(chat_id)
+        for admin in admins:
+            if admin.user.id == user_id:
+                return True
+        return False
+    except Exception as e:
+        print(f"خطا در بررسی ادمین بودن: {e}")
+        return False
 
-
-
-
+# پین پیام
 @bot.message_handler(func=lambda m: m.text == 'پین')
 def pin(m):
- chat_id = m.chat.id
- user_id = m.from_user.id
- 
- if is_user_admin(chat_id, user_id):
-     if m.reply_to_message:
-         bot.pin_chat_message(m.chat.id, m.reply_to_message.id)
-         bot.reply_to(m, "پیام مورد نظر پین شد")
-     else:
-        bot.reply_to(m, "برای پین کردن لطفا روی آن پیام ریپلای بزنین")
- else:
-        bot.reply_to(m, 'فقط ادمین و مالک گروه میتونه پیامی رو پین کنه!')
+    if not is_user_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن پیام رو پین کنن.')
 
- 
+    if m.reply_to_message:
+        bot.pin_chat_message(m.chat.id, m.reply_to_message.id)
+        bot.reply_to(m, "پیام پین شد.")
+    else:
+        bot.reply_to(m, "لطفاً روی پیام موردنظر ریپلای کنید.")
+
+# حذف پین
 @bot.message_handler(func=lambda m: m.text == 'حذف پین')
 def unpin(m):
-    bot.unpin_chat_message(m.chat.id, m.reply_to_message.id)
-    bot.reply_to(m, 'پین پیام موردنظر حذف شد ')
+    if not is_user_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن پین رو حذف کنن.')
 
+    bot.unpin_chat_message(m.chat.id)
+    bot.reply_to(m, 'پین حذف شد.')
 
+# ادمین‌سازی
 @bot.message_handler(func=lambda m: m.text == 'افزودن ادمین')
 def promote(m):
+    if not is_user_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین می‌تونه ادمین اضافه کنه.')
+
+    if not m.reply_to_message:
+        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
+
     bot.promote_chat_member(
         m.chat.id,
-        m.reply_to_message.json['from']['id'],
-        can_change_info=True,
-        can_delete_messages=True,
-        can_edit_messages=True,
-        can_invite_users=True,
+        m.reply_to_message.from_user.id,
         can_manage_chat=True,
-        can_manage_topics=False,
-        can_manage_video_chats=True,
-        can_manage_voice_chats=True,
+        can_delete_messages=True,
+        can_invite_users=True,
         can_pin_messages=True,
-        can_post_messages=True,
         can_promote_members=True,
-        can_restrict_members=True,
     )
-    bot.reply_to(m, 'ادمین جدید اضافه شد')
+    bot.reply_to(m, 'کاربر به ادمین ارتقا یافت.')
 
-
+# برکناری ادمین
 @bot.message_handler(func=lambda m: m.text == 'حذف ادمین')
 def demote(m):
+    if not is_user_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین می‌تونه ادمین رو حذف کنه.')
+
+    if not m.reply_to_message:
+        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
+
     bot.promote_chat_member(
         m.chat.id,
-        m.reply_to_message.json['from']['id'],
-        can_change_info=False,
-        can_delete_messages=False,
-        can_edit_messages=False,
-        can_invite_users=False,
+        m.reply_to_message.from_user.id,
         can_manage_chat=False,
-        can_manage_topics=False,
-        can_manage_video_chats=False,
-        can_manage_voice_chats=False,
+        can_delete_messages=False,
+        can_invite_users=False,
         can_pin_messages=False,
-        can_post_messages=False,
         can_promote_members=False,
-        can_restrict_members=False,
     )
-    bot.reply_to(m, 'ادمین از مقام برکنار شد ')
+    bot.reply_to(m, 'ادمین حذف شد.')
 
-
+# بن کاربر
 @bot.message_handler(func=lambda m: m.text == 'بن')
 def ban(m):
- chat_id = m.chat.id
- user_id = m.from_user.id
- if is_user_admin(chat_id, user_id):
-     if m.reply_to_message:
-         bot.ban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
-         bot.reply_to(m, f" کاربر {m.reply_to_message.from_user.first_name} بن شد ")
-     else:
-        bot.reply_to(m, "برای بن کردن کاربر لطفا روی پیام  ریپلای بزنین")
- else:
-     bot.reply_to(m, 'فقط ادمین و مالک گروه میتونه کاربری رو بن کنه!')
-    
+    if not is_user_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن بن کنن.')
 
+    if not m.reply_to_message:
+        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
 
+    bot.ban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
+    bot.reply_to(m, f"کاربر {m.reply_to_message.from_user.first_name} بن شد.")
+
+# حذف بن
 @bot.message_handler(func=lambda m: m.text == 'حذف بن')
 def unban(m):
+    if not is_user_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن این کارو بکنن.')
+
+    if not m.reply_to_message:
+        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
+
     bot.unban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
-    bot.reply_to(
-        m, f" کاربر {m.reply_to_message.from_user.first_name} از لیست بن خارج شد ")
+    bot.reply_to(m, 'کاربر از بن خارج شد.')
 
-
+# سکوت
 @bot.message_handler(func=lambda m: m.text == 'سکوت')
 def restrict(m):
- chat_id = m.chat.id
- user_id = m.from_user.id
- if is_user_admin(chat_id, user_id):
-     if m.reply_to_message:
-        bot.restrict_chat_member(m.chat.id, m.reply_to_message.from_user.id, can_add_web_page_previews=False, can_change_info=False, can_invite_users=False,
-                             can_pin_messages=False, can_send_media_messages=False, can_send_messages=False, can_send_other_messages=False, can_send_polls=False)
-        bot.reply_to(m, 'کاربر موردنظر سکوت شد')
-     else:
-        bot.reply_to(m, "برای سکوت کردن کاربر لطفا روی پیام آن ریپلای بزنین")
- else:
-        bot.reply_to(m, 'فقط ادمین و مالک گروه میتونه کاربری رو سکوت کنه!')
+    if not is_user_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن سکوت کنن.')
 
+    if not m.reply_to_message:
+        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
+
+    bot.restrict_chat_member(
+        m.chat.id,
+        m.reply_to_message.from_user.id,
+        permissions=telebot.types.ChatPermissions(can_send_messages=False)
+    )
+    bot.reply_to(m, 'کاربر سکوت شد.')
+
+# حذف سکوت
 @bot.message_handler(func=lambda m: m.text == 'حذف سکوت')
 def derestrict(m):
-    bot.restrict_chat_member(m.chat.id, m.reply_to_message.from_user.id, can_add_web_page_previews=True, can_change_info=True, can_invite_users=True,
-                             can_pin_messages=True, can_send_media_messages=True, can_send_messages=True, can_send_other_messages=True, can_send_polls=True)
-    bot.reply_to(m, 'سکوت کاربر موردنظر حذف شد')
+    if not is_user_admin(m.chat.id, m.from_user.id):
+        return bot.reply_to(m, 'فقط ادمین‌ها می‌تونن سکوت رو بردارن.')
 
+    if not m.reply_to_message:
+        return bot.reply_to(m, 'لطفاً روی پیام کاربر ریپلای کنید.')
+    bot.restrict_chat_member(
+    m.chat.id,
+    m.reply_to_message.from_user.id,
+    permissions=telebot.types.ChatPermissions(can_send_messages=True)
+    )
+    bot.reply_to(m, 'سکوت کاربر برداشته شد.')
+
+
+
+
+# از اینجا به بعد رو ویرایش میکنم
 
 @bot.message_handler(func=lambda m: m.text == 'فونت اسم♍')
 def text_formatting(m):
