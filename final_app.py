@@ -273,16 +273,16 @@ def handle_all_messages(message):
         bot.reply_to(message, 'خبر سلامتیت، خودت چه خبر؟')
 
     elif text in ['فدات', 'فدابشم']:
-        bot.reply_to(message, 'قربونت عزیز')
+        bot.reply_to(message, 'قربونت عزیز❤️')
 
     elif text in ['خداحافظ', 'بای']:
-        bot.reply_to(message, 'خدانگهدار')
+        bot.reply_to(message, 'خدانگهدار👋')
 
     elif text in ['اهل کجایی']:
         bot.reply_to(message, 'من از سیاره ربات‌ها اومدم!')
         
     elif text == 'کجایی':
-        bot.reply_to(message, 'تو تلگرام منتظر پیامتم')    
+        bot.reply_to(message, 'تو تلگرام منتظر پیامتم😊')    
 
     elif text == 'اسمت چیه':
         bot.reply_to(message, 'اسمم علی بات🤖 هست')
@@ -315,7 +315,7 @@ def handle_all_messages(message):
         bot.reply_to(message, 'من علی بات🤖هستمه شما مه ره نشناسنی😁')
 
     elif text == 'ربات ته ره دوست دارمه':
-        bot.reply_to(message, 'منم ته ره خله دوست دارمه ولی از یه نظر دیگه🙂😊')
+        bot.reply_to(message, 'منم ته ره خله دوست دارمه ولی از یه نظر دیگه🙂')
 
     elif text == 'ربات مه جه رل زندی':
         bot.reply_to(message, 'اره ته فدابووشم ناز ره بخارم😁')
@@ -337,9 +337,9 @@ def handle_all_messages(message):
                 bot.delete_message(chat_id, message.message_id)
                 user_warnings[user_id] = user_warnings.get(user_id, 0) + 1
                 if user_warnings[user_id] == 1:
-                    bot.send_message(chat_id, f"⚠️ {first_name} - ارسال لینک 1 از 2 (تکرار = حذف)")
+                    bot.send_message(chat_id, f"⚠️ کاربر{username} - ارسال لینک 1 از 2\n\nلینک ممنوع هست🚫 ")
                 elif user_warnings[user_id] >= 2:
-                    bot.send_message(chat_id, f"⛔️ {first_name} حذف شد (ارسال لینک 2 از 2)")
+                    bot.send_message(chat_id, f"⛔️ {username} حذف شد (ارسال لینک 2 از 2)")
                     bot.ban_chat_member(chat_id, user_id)
             except:
                 pass
@@ -354,7 +354,7 @@ def handle_all_messages(message):
                 '🔠-<code> اصطلاحات انگلیسی</code>\n\n'
                 '❓-<code> جرعت حقیقت</code>\n\n'
                 '😄-<code> جوک</code>\n\n'
-                '   𐎠-<code>زبان هخامنشی</code>\n\n'
+                '-𐎠<code>زبان هخامنشی</code>\n\n'
                 '⁉️-<code> دانستنی</code>\n\n'
                 '📞-<code> ارتباط با ما</code>\n\n'
                 '<b>برای کپی، روی متن‌ها بزن</b>', parse_mode="HTML")
