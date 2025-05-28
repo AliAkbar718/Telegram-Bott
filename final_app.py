@@ -289,7 +289,7 @@ def handle_all_messages(message):
         bot.reply_to(message, 'سلام خوبم حال خودت خوبه؟')
         
     elif text == 'سلام':
-        bot.reply_to(message, 'سلام خوبی عزیز')    
+        bot.reply_to(message, 'سلام خوبی عزیزم')    
 
     elif text == 'چه خبرا':
         bot.reply_to(message, 'خبر سلامتیت، خودت چه خبر؟')
