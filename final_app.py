@@ -192,42 +192,53 @@ def is_user_member(user_id):
 
 # -------------------- /start --------------------
 
+# تابع بررسی عضویت در کانال
+def is_user_member(user_id):
+    try:
+        member = bot.get_chat_member('@rap_family1', user_id)  #
+        return member.status in ['member', 'administrator', 'creator']
+    except:
+        return False
+
+# هندلر /start
 @bot.message_handler(commands=['start'])
 def start(message):
-    # ساخت کیبورد
-    reply_keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+    user_id = message.from_user.id
+    chat_id = message.chat.id
 
-    # دکمه‌ها
-    btn1 = types.KeyboardButton('لیست')
-    btn2 = types.KeyboardButton('مدیریت گروه')
-    btn3 = types.KeyboardButton('بیوگرافی')
-    btn4 = types.KeyboardButton('دانستنی')
-    btn5 = types.KeyboardButton('جوک')
-    btn6 = types.KeyboardButton('اصطلاحات انگلیسی')
-    btn7 = types.KeyboardButton('جرعت حقیقت')
-    btn8 = types.KeyboardButton('زبان هخامنشی')
-    btn9 = types.KeyboardButton('ارتباط با ما')
-    
-    
-    # اضافه کردن دکمه‌ها به کیبورد
-    reply_keyboard.add(btn1, btn2, btn3, btn4,  btn5,  btn6,  btn7,  btn8,  btn9)
-
-    # بررسی عضویت در کانال (اختیاری)
-    if is_user_member(message.from_user.id):
-        bot.send_message(
-            message.chat.id,
-            "سلام من علی بات🤖 هستم!\n\nبرای مشاهده قابلیت‌هام یکی از گزینه‌ها را از منوی زیر انتخاب کن یا تایپ کن",
-            reply_markup=reply_keyboard
+    if is_user_member(user_id):
+        # ساخت Reply Keyboard
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        keyboard.add(
+            types.KeyboardButton('مدیریت گروه'),
+            types.KeyboardButton('بیوگرافی'),
+            types.KeyboardButton('اصطلاحات انگلیسی'),
+            types.KeyboardButton('جرعت حقیقت'),
+            types.KeyboardButton('جوک'),
+            types.KeyboardButton('زبان هخامنشی'),
+            types.KeyboardButton('دانستنی'),
+            types.KeyboardButton('ارتباط با ما')
         )
-    else:
-        join_btn = types.InlineKeyboardMarkup()
-        join_btn.add(types.InlineKeyboardButton("عضویت در کانال✅", url="https://t.me/rap_family1"))
+
         bot.send_message(
-            message.chat.id,
-            "توی کانال عضو نیستی ❌، برای استفاده از ربات باید عضو کانال بشی  👇",
+            chat_id,
+            "سلام من علی بات 🤖 هستم\n\nاز منوی زیر یکی از قابلیت‌ها رو انتخاب کن:",
+            reply_markup=keyboard
+        )
+
+    else:
+        # ساخت دکمه اینلاین برای عضویت در کانال
+        join_btn = types.InlineKeyboardMarkup()
+        join_btn.add(
+            types.InlineKeyboardButton("📢 عضویت در کانال", url="https://t.me/rap_family1")
+        )
+        bot.send_message(
+            chat_id,
+            "توی کانال عضو نیستی ❌\n\nبرای استفاده از ربات، ابتدا عضو کانال شو.",
             reply_markup=join_btn
         )
-        bot.send_message(message.chat.id, "وقتی عضو شدی، روی گزینه‌ «لیست» از کیبورد بزن:", reply_markup=reply_keyboard)
+        bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن.")
+
 
 # -------------------- پیام‌های عمومی --------------------
 
@@ -341,7 +352,7 @@ def handle_all_messages(message):
         bot.reply_to(message, 'به سلامت شه هوا ره دار')
         
     elif text == 'بات':
-      bot.send_message(chat_id, f'جان @{message.from_user.username} مه ره کار داشتی؟\n\n 🔸 برای اطلاع داشتن از مه قابلیت کلمه «لیست» ره راهی هاکان', parse_mode="HTML")
+      bot.send_message(chat_id, f'جان @{message.from_user.username} مه ره کار داشتی؟\n\n 🔸 برای اطلاع داشتن از مه قابلیت کلمه <b> «لیست» </b> ره راهی هاکان', parse_mode="HTML")
 
     elif text == 'کیر':
         bot.set_message_reaction(chat_id=chat_id, message_id=message.message_id, reaction=[types.ReactionTypeEmoji(emoji='🖕')])
