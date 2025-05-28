@@ -193,9 +193,9 @@ def is_user_member(user_id):
 # -------------------- /start --------------------
 
 # تابع بررسی عضویت در کانال
-def is_user_member(user_id):
+def is_user_members(user_id):
     try:
-        member = bot.get_chat_member('@rap_family1', user_id)  #
+        member = bot.get_chat_member('@rap_family1', user_id)  
         return member.status in ['member', 'administrator', 'creator']
     except:
         return False
@@ -206,7 +206,7 @@ def start(message):
     user_id = message.from_user.id
     chat_id = message.chat.id
 
-    if is_user_member(user_id):
+    if is_user_members(user_id):
         # ساخت Reply Keyboard
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         keyboard.add(
