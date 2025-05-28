@@ -183,12 +183,6 @@ def is_admin(chat_id, user_id):
     except:
         return False
 
-def is_user_member(user_id):
-    try:
-        member = bot.get_chat_member(CHANNEL_USERNAME, user_id)
-        return member.status in ['member', 'administrator', 'creator']
-    except:
-        return False
 
 # -------------------- /start --------------------
 
@@ -230,7 +224,7 @@ def start(message):
         # ساخت دکمه اینلاین برای عضویت در کانال
         join_btn = types.InlineKeyboardMarkup()
         join_btn.add(
-            types.InlineKeyboardButton("📢 عضویت در کانال", url="https://t.me/rap_family1")
+            types.InlineKeyboardButton("عضویت در کانال📢", url="https://t.me/rap_family1")
         )
         bot.send_message(
             chat_id,
@@ -375,7 +369,6 @@ def handle_all_messages(message):
 
     # پاسخ به لیست
     if text == 'لیست':
-        if is_user_member(user_id):
             bot.send_message(chat_id,
                 '🤵‍♂️-<code> مدیریت گروه</code>\n\n'
                 '🗨️-<code> بیوگرافی</code>\n\n'
@@ -386,10 +379,6 @@ def handle_all_messages(message):
                 '⁉️-<code> دانستنی</code>\n\n'
                 '📞-<code> ارتباط با ما</code>\n\n'
                 '<b>برای کپی، روی متن‌ها بزن</b>', parse_mode="HTML")
-        else:
-            join_btn = types.InlineKeyboardMarkup()
-            join_btn.add(types.InlineKeyboardButton("عضویت در کانال✅", url="https://t.me/rap_family1"))
-            bot.send_message(chat_id, "عضو کانال نیستی. اول عضو شو:", reply_markup=join_btn)
 
 
 weekday_names = {
