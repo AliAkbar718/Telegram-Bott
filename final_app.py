@@ -11,13 +11,12 @@ import os
 from flask import Flask, request
 import random
 import pytz
-from googletrans import Translator
+
 
 
 TOKEN = '7579645804:AAHt5O6hHdXtdigsQQ-WMGiIm7cJexySTVc'
 CHANNEL_USERNAME = '@rap_family1' 
 bot = telebot.TeleBot(TOKEN)
-
 
 
 app = Flask(__name__)
@@ -189,37 +188,7 @@ def is_admin(chat_id, user_id):
         return False
 
 
-translator = Translator()
-user_translation_mode = {}
-
-# فعال‌سازی حالت ترجمه برای کاربر
-@bot.message_handler(func=lambda m: m.text == 'ترجمه متن 🔤')
-def activate_translation_mode(message):
-    user_id = message.from_user.id
-    user_translation_mode[user_id] = True
-    bot.send_message(message.chat.id, "📝 لطفاً متنی که می‌خوای ترجمه کنم رو ارسال کن.")
-
-# ترجمه پیام بعدی در صورت فعال بودن حالت ترجمه
-@bot.message_handler(func=lambda m: True)
-def handle_all_messages(message):
-    user_id = message.from_user.id
-    text = message.text
-
-    # حالت ترجمه فعال بود؟
-    if user_translation_mode.get(user_id):
-        lang = 'fa' if is_english(text) else 'en'
-        try:
-            result = translator.translate(text, dest=lang)
-            bot.send_message(message.chat.id, f"✅ ترجمه:\n\n{result.origin} → {result.text}")
-        except Exception:
-            bot.send_message(message.chat.id, "❌ خطا در ترجمه. لطفاً دوباره امتحان کن.")
-        finally:
-            user_translation_mode[user_id] = False  # خاموش کردن حالت ترجمه
-        return  # جلوگیری از برخورد با بقیه کدها در همین handler
-
-def is_english(text):
-    return all(ord(c) < 128 for c in text)
-
+# -------------------- /start --------------------
 
 # تابع بررسی عضویت در کانال
 def is_user_members(user_id):
@@ -230,7 +199,7 @@ def is_user_members(user_id):
         return False
     
 
-# -------------------- /start --------------------
+# هندلر /start
 @bot.message_handler(commands=['start'])
 def start(message):
     user_id = message.from_user.id
@@ -269,7 +238,6 @@ def start(message):
             reply_markup=join_btn
         )
         bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن.")
-        
 
 
 
