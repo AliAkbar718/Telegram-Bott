@@ -11,7 +11,10 @@ import os
 from flask import Flask, request
 import random
 import pytz
+from googletrans import Translator
 
+
+translator = Translator()
 
 TOKEN = '7579645804:AAHt5O6hHdXtdigsQQ-WMGiIm7cJexySTVc'
 CHANNEL_USERNAME = '@rap_family1' 
@@ -47,8 +50,35 @@ def handle_text(message):
     converted = convert_to_cuneiform(original)
     bot.reply_to(message, f"متن میخی:\n{converted}")   
     bot.send_message(message.chat.id, 'برای اینکه متن جدیدی را وارد کنید\n\nمجددا کلمه <b>زبان هخامنشی</b> را ارسال کنید ', parse_mode="HTML")
-       
+ 
+######################################################################    
 
+@bot.message_handler(func=lambda m: m.text == 'ترجمه متن')
+def activate_translation(message):
+    user_translation_mode[message.from_user.id] = True
+    bot.send_message(message.chat.id, "لطفاً متنی که می‌خوای ترجمه کنم رو بفرست.")
+
+user_translation_mode = {}
+
+@bot.message_handler(func=lambda m: True)
+def handle_translation_text(message):
+    user_id = message.from_user.id
+    if user_translation_mode.get(user_id):
+        try:
+            lang = 'fa' if is_english(message.text) else 'en'
+            result = translator.translate(message.text, dest=lang)
+            bot.send_message(message.chat.id, f"✅ ترجمه:\n\n{result.origin} → {result.text}")
+        except:
+            bot.send_message(message.chat.id, "❌ خطا در ترجمه. لطفاً دوباره امتحان کن.")
+        finally:
+            user_translation_mode[user_id] = False  # خارج کردن از حالت ترجمه
+
+def is_english(text):
+    return all(ord(c) < 128 for c in text)
+
+
+
+   
 user_warnings = {}
 
 @bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('پین'))
@@ -211,7 +241,8 @@ def start(message):
             types.KeyboardButton('جوک'),
             types.KeyboardButton('زبان هخامنشی'),
             types.KeyboardButton('دانستنی'),
-            types.KeyboardButton('ارتباط با ما')
+            types.KeyboardButton('ارتباط با ما'),
+            types.KeyboardButton('ترجمه متن')
         )
 
         bot.send_message(

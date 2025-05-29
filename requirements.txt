@@ -2,3 +2,4 @@ Flask
 pyTelegramBotAPI
 jdatetime
 pytz
+googletrans
