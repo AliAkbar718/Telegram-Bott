@@ -57,21 +57,21 @@ def handle_text(message):
 
 
 
+def is_english(text):
+        return all(ord(c) < 128 for c in text)
+
 # فعال‌سازی حالت ترجمه برای کاربر
 @bot.message_handler(func=lambda m: m.text == 'ترجمه متن')
 def activate_translation_mode(message):
     user_id = message.from_user.id
     user_translation_mode[user_id] = True
-    bot.send_message(message.chat.id, "📝 لطفاً متنی که می‌خوای ترجمه کنم رو ارسال کن.")
-
-# ترجمه پیام بعدی در صورت فعال بودن حالت ترجمه
-@bot.message_handler(func=lambda m: True)
-def handle_all_messages(message):
+    bot.send_message(message.chat.id, "📝 لطفاً متنی که می‌خوای ترجمه کنم رو ارسال کن")
+    bot.register_next_step_handler(message, handle_messages)
+    
+def handle_messages(message):
     user_id = message.from_user.id
     text = message.text
     
-    def is_english(text):
-        return all(ord(c) < 128 for c in text)
     # حالت ترجمه فعال بود؟
     if user_translation_mode.get(user_id):
         lang = 'fa' if is_english(text) else 'en'
@@ -83,6 +83,7 @@ def handle_all_messages(message):
         finally:
             user_translation_mode[user_id] = False  # خاموش کردن حالت ترجمه
         return  # جلوگیری از برخورد با بقیه کدها در همین handler
+
 
  
 
