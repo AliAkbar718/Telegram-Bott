@@ -11,7 +11,6 @@ import os
 from flask import Flask, request
 import random
 import pytz
-from translate import register_translation_handlers
 
 
 
@@ -19,7 +18,7 @@ TOKEN = '7579645804:AAHt5O6hHdXtdigsQQ-WMGiIm7cJexySTVc'
 CHANNEL_USERNAME = '@rap_family1' 
 bot = telebot.TeleBot(TOKEN)
 
-register_translation_handlers(bot)
+
 
 app = Flask(__name__)
 
@@ -28,49 +27,6 @@ bot.remove_webhook()
 bot.set_webhook(url=WEBHOOK_URL)
 
 WEBHOOK_SECRET_PATH = '/webhook'  
- 
-# هندلر /start
-@bot.message_handler(commands=['start'])
-def start(message):
-    user_id = message.from_user.id
-    chat_id = message.chat.id
-
-    if is_user_members(user_id):
-        # ساخت Reply Keyboard
-        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-        keyboard.add(
-            types.KeyboardButton('مدیریت گروه'),
-            types.KeyboardButton('بیوگرافی'),
-            types.KeyboardButton('اصطلاحات انگلیسی'),
-            types.KeyboardButton('جرعت حقیقت'),
-            types.KeyboardButton('جوک'),
-            types.KeyboardButton('زبان هخامنشی'),
-            types.KeyboardButton('دانستنی'),
-            types.KeyboardButton('ارتباط با ما'),
-            types.KeyboardButton('ترجمه متن')
-        )
-
-        bot.send_message(
-            chat_id,
-            "سلام من علی بات 🤖 هستم\n\nاز منوی زیر یکی از قابلیت‌ها رو انتخاب کن:",
-            reply_markup=keyboard
-        )
-
-    else:
-        # ساخت دکمه اینلاین برای عضویت در کانال
-        join_btn = types.InlineKeyboardMarkup()
-        join_btn.add(
-            types.InlineKeyboardButton("عضویت در کانال📢", url="https://t.me/rap_family1")
-        )
-        bot.send_message(
-            chat_id,
-            "توی کانال عضو نیستی ❌\n\nبرای استفاده از ربات، ابتدا عضو کانال شو.",
-            reply_markup=join_btn
-        )
-        bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن.")
-
- 
- 
  
 farsi_to_cuneiform = {
     'ا': '𐎠', 'آ': '𐎠', 'ب': '𐎲', 'پ': '𐎱', 'ت': '𐎫', 'ث': '𐎰', 'تو': '𐎬', 'طو': '𐎬', 'ج': '𐎢', 'جی': '𐎪', 'چ': '𐎨', 'ح': '𐏃', 'خ': '𐎧',
@@ -242,7 +198,48 @@ def is_user_members(user_id):
         return member.status in ['member', 'administrator', 'creator']
     except:
         return False
+    
 
+# هندلر /start
+@bot.message_handler(commands=['start'])
+def start(message):
+    user_id = message.from_user.id
+    chat_id = message.chat.id
+
+    if is_user_members(user_id):
+        # ساخت Reply Keyboard
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        keyboard.add(
+            types.KeyboardButton('مدیریت گروه'),
+            types.KeyboardButton('بیوگرافی'),
+            types.KeyboardButton('اصطلاحات انگلیسی'),
+            types.KeyboardButton('جرعت حقیقت'),
+            types.KeyboardButton('جوک'),
+            types.KeyboardButton('زبان هخامنشی'),
+            types.KeyboardButton('دانستنی'),
+            types.KeyboardButton('ارتباط با ما'),
+            types.KeyboardButton('ترجمه متن')
+        )
+
+        bot.send_message(
+            chat_id,
+            "سلام من علی بات 🤖 هستم\n\nاز منوی زیر یکی از قابلیت‌ها رو انتخاب کن:",
+            reply_markup=keyboard
+        )
+
+    else:
+        # ساخت دکمه اینلاین برای عضویت در کانال
+        join_btn = types.InlineKeyboardMarkup()
+        join_btn.add(
+            types.InlineKeyboardButton("عضویت در کانال📢", url="https://t.me/rap_family1")
+        )
+        bot.send_message(
+            chat_id,
+            "توی کانال عضو نیستی ❌\n\nبرای استفاده از ربات، ابتدا عضو کانال شو.",
+            reply_markup=join_btn
+        )
+        bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن.")
+        
 
 
 
@@ -254,9 +251,7 @@ def handle_all_messages(message):
     user_id = message.from_user.id
     text = message.text.lower().strip()
     first_name = message.from_user.first_name
-    
-    if message.text.startswith('/start'):
-     return
+
     # جلوگيری از درگیری با دستورات مدیریتی
     if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین']:
         return
