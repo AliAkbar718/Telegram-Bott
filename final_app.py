@@ -55,8 +55,7 @@ def handle_text(message):
     bot.send_message(message.chat.id, 'برای اینکه متن جدیدی را وارد کنید\n\nمجددا کلمه <b>زبان هخامنشی</b> را ارسال کنید ', parse_mode="HTML")
  
 
-
-
+############### translate text #################
 def is_english(text):
         return all(ord(c) < 128 for c in text)
 
@@ -77,7 +76,7 @@ def handle_messages(message):
         lang = 'fa' if is_english(text) else 'en'
         try:
             result = translator.translate(text, dest=lang)
-            bot.send_message(message.chat.id, f"✅ ترجمه:\n\n{result.origin} → {result.text}")
+            bot.send_message(message.chat.id, f"✅ ترجمه:\n\n{result.origin} ➡️\n\n{result.text}")
         except Exception:
             bot.send_message(message.chat.id, "❌ خطا در ترجمه. لطفاً دوباره امتحان کن.")
         finally:
