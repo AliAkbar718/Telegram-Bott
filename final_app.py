@@ -76,7 +76,7 @@ def handle_messages(message):
         lang = 'fa' if is_english(text) else 'en'
         try:
             result = translator.translate(text, dest=lang)
-            bot.send_message(message.chat.id, f"✅ ترجمه:\n\n{result.origin} ➡️ {result.text}")
+            bot.send_message(message.chat.id, f"✅ ترجمه:\n\n{result.origin} \n⬅️ {result.text}")
         except Exception:
             bot.send_message(message.chat.id, "❌ خطا در ترجمه. لطفاً دوباره امتحان کن.")
         finally:
