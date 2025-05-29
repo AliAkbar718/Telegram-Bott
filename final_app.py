@@ -250,7 +250,9 @@ def handle_all_messages(message):
     user_id = message.from_user.id
     text = message.text.lower().strip()
     first_name = message.from_user.first_name
-
+    
+    if message.text.startswith('/start'):
+     return
     # جلوگيری از درگیری با دستورات مدیریتی
     if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین']:
         return
