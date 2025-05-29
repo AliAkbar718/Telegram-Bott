@@ -29,6 +29,49 @@ bot.set_webhook(url=WEBHOOK_URL)
 
 WEBHOOK_SECRET_PATH = '/webhook'  
  
+# هندلر /start
+@bot.message_handler(commands=['start'])
+def start(message):
+    user_id = message.from_user.id
+    chat_id = message.chat.id
+
+    if is_user_members(user_id):
+        # ساخت Reply Keyboard
+        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
+        keyboard.add(
+            types.KeyboardButton('مدیریت گروه'),
+            types.KeyboardButton('بیوگرافی'),
+            types.KeyboardButton('اصطلاحات انگلیسی'),
+            types.KeyboardButton('جرعت حقیقت'),
+            types.KeyboardButton('جوک'),
+            types.KeyboardButton('زبان هخامنشی'),
+            types.KeyboardButton('دانستنی'),
+            types.KeyboardButton('ارتباط با ما'),
+            types.KeyboardButton('ترجمه متن')
+        )
+
+        bot.send_message(
+            chat_id,
+            "سلام من علی بات 🤖 هستم\n\nاز منوی زیر یکی از قابلیت‌ها رو انتخاب کن:",
+            reply_markup=keyboard
+        )
+
+    else:
+        # ساخت دکمه اینلاین برای عضویت در کانال
+        join_btn = types.InlineKeyboardMarkup()
+        join_btn.add(
+            types.InlineKeyboardButton("عضویت در کانال📢", url="https://t.me/rap_family1")
+        )
+        bot.send_message(
+            chat_id,
+            "توی کانال عضو نیستی ❌\n\nبرای استفاده از ربات، ابتدا عضو کانال شو.",
+            reply_markup=join_btn
+        )
+        bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن.")
+
+ 
+ 
+ 
 farsi_to_cuneiform = {
     'ا': '𐎠', 'آ': '𐎠', 'ب': '𐎲', 'پ': '𐎱', 'ت': '𐎫', 'ث': '𐎰', 'تو': '𐎬', 'طو': '𐎬', 'ج': '𐎢', 'جی': '𐎪', 'چ': '𐎨', 'ح': '𐏃', 'خ': '𐎧',
     'د': '𐎭', 'دی': '𐎮', 'دو': '𐎯', 'ذ': '𐏀', 'ر': '𐎼', 'رو': '𐎽', 'ز': '𐏀', 'س': '𐎿', 'ش': '𐎤', 'ص': '𐎿', 'ض': '𐏀', 'ط': '𐎫', 'ظ': '𐏀', 'ع': '𐎠', 'غ': '𐎥', 'ک': '𐎣',
@@ -200,45 +243,6 @@ def is_user_members(user_id):
     except:
         return False
 
-# هندلر /start
-@bot.message_handler(commands=['start'])
-def start(message):
-    user_id = message.from_user.id
-    chat_id = message.chat.id
-
-    if is_user_members(user_id):
-        # ساخت Reply Keyboard
-        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-        keyboard.add(
-            types.KeyboardButton('مدیریت گروه'),
-            types.KeyboardButton('بیوگرافی'),
-            types.KeyboardButton('اصطلاحات انگلیسی'),
-            types.KeyboardButton('جرعت حقیقت'),
-            types.KeyboardButton('جوک'),
-            types.KeyboardButton('زبان هخامنشی'),
-            types.KeyboardButton('دانستنی'),
-            types.KeyboardButton('ارتباط با ما'),
-            types.KeyboardButton('ترجمه متن')
-        )
-
-        bot.send_message(
-            chat_id,
-            "سلام من علی بات 🤖 هستم\n\nاز منوی زیر یکی از قابلیت‌ها رو انتخاب کن:",
-            reply_markup=keyboard
-        )
-
-    else:
-        # ساخت دکمه اینلاین برای عضویت در کانال
-        join_btn = types.InlineKeyboardMarkup()
-        join_btn.add(
-            types.InlineKeyboardButton("عضویت در کانال📢", url="https://t.me/rap_family1")
-        )
-        bot.send_message(
-            chat_id,
-            "توی کانال عضو نیستی ❌\n\nبرای استفاده از ربات، ابتدا عضو کانال شو.",
-            reply_markup=join_btn
-        )
-        bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن.")
 
 
 
