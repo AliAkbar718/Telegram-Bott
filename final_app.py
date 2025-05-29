@@ -438,8 +438,6 @@ def handle_left_member(message):
 
 
 
-register_translation_handlers(bot)
-
 @app.route(WEBHOOK_SECRET_PATH, methods=['POST'])
 def webhook():
     update = telebot.types.Update.de_json(request.data.decode('utf-8'))
