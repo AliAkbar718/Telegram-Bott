@@ -11,15 +11,15 @@ import os
 from flask import Flask, request
 import random
 import pytz
-from googletrans import Translator
+from translate import register_translation_handlers
 
 
-translator = Translator()
 
 TOKEN = '7579645804:AAHt5O6hHdXtdigsQQ-WMGiIm7cJexySTVc'
 CHANNEL_USERNAME = '@rap_family1' 
 bot = telebot.TeleBot(TOKEN)
 
+register_translation_handlers(bot)
 app = Flask(__name__)
 
 WEBHOOK_URL = 'https://telegram-bott-xuhm.onrender.com/webhook'
@@ -242,28 +242,6 @@ def start(message):
         bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن.")
 
 
-@bot.message_handler(func=lambda m: m.text == 'ترجمه متن')
-def activate_translation(message):
-    user_translation_mode[message.from_user.id] = True
-    bot.send_message(message.chat.id, "لطفاً متنی که می‌خوای ترجمه کنم رو بفرست.")
-
-user_translation_mode = {}
-
-@bot.message_handler(func=lambda m: True)
-def handle_translation_text(message):
-    user_id = message.from_user.id
-    if user_translation_mode.get(user_id):
-        try:
-            lang = 'fa' if is_english(message.text) else 'en'
-            result = translator.translate(message.text, dest=lang)
-            bot.send_message(message.chat.id, f"✅ ترجمه:\n\n{result.origin} → {result.text}")
-        except:
-            bot.send_message(message.chat.id, "❌ خطا در ترجمه. لطفاً دوباره امتحان کن.")
-        finally:
-            user_translation_mode[user_id] = False  # خارج کردن از حالت ترجمه
-
-def is_english(text):
-    return all(ord(c) < 128 for c in text)
 
 # -------------------- پیام‌های عمومی --------------------
 
