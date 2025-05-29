@@ -20,6 +20,7 @@ CHANNEL_USERNAME = '@rap_family1'
 bot = telebot.TeleBot(TOKEN)
 
 register_translation_handlers(bot)
+
 app = Flask(__name__)
 
 WEBHOOK_URL = 'https://telegram-bott-xuhm.onrender.com/webhook'
@@ -51,8 +52,6 @@ def handle_text(message):
     bot.reply_to(message, f"متن میخی:\n{converted}")   
     bot.send_message(message.chat.id, 'برای اینکه متن جدیدی را وارد کنید\n\nمجددا کلمه <b>زبان هخامنشی</b> را ارسال کنید ', parse_mode="HTML")
  
-######################################################################    
-
 
 
    
@@ -439,8 +438,7 @@ def handle_left_member(message):
 
 
 
-
-
+register_translation_handlers(bot)
 
 @app.route(WEBHOOK_SECRET_PATH, methods=['POST'])
 def webhook():
@@ -452,8 +450,6 @@ def webhook():
 def index():
     return 'ربات فعال است', 200
    
-
-
 
         
 if __name__ == '__main__':
