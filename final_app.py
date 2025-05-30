@@ -172,7 +172,7 @@ def mute_timed(message):
         until_date=until
     )
 
-    bot.reply_to(message, f"⏱ کاربر<b> {message.reply_to_message.from_user.first_name}</b>به مدت {minutes} دقیقه\nسکوت شد", parse_mode="HTML")
+    bot.reply_to(message, f"⏱ کاربر<b> {message.reply_to_message.from_user.first_name}</b> به مدت {minutes} دقیقه\nسکوت شد", parse_mode="HTML")
 
 
 
