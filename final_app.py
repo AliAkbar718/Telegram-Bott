@@ -145,7 +145,7 @@ def mute_default(message):
         )
         bot.reply_to(message, "✅ کاربر بدون محدودیت زمانی ساکت شد.")
 
-@bot.message_handler(func=lambda m: m.text.startswith('سکوت') and m.text[6:].isdigit())
+@bot.message_handler(func=lambda m: m.text.startswith('سکوت تایمی') and m.text[6:].isdigit())
 def mute_timed(message):
     if message.reply_to_message:
         minutes = int(message.text[6:])
