@@ -157,7 +157,7 @@ def mute_forever(message):
 @bot.message_handler(func=lambda m: m.text.startswith('سکوت ') and m.text[6:].isdigit())
 def mute_timed(message):
     if not message.reply_to_message:
-        return bot.reply_to(message, "برای سکوت زمان‌دار،\n\n روی پیام کاربر ریپلای کن  و مثلا بنویس: سکوت 5")
+        return bot.reply_to(message, "برای سکوت زمان‌دار،\n\n روی پیام کاربر ریپلای کن و \nمثلا بنویس: سکوت 5")
 
     if not is_admin(message.chat.id, message.from_user.id):
         return bot.reply_to(message, "فقط ادمین‌ها می‌تونن سکوت کنن.")
@@ -172,7 +172,7 @@ def mute_timed(message):
         until_date=until
     )
 
-    bot.reply_to(message, f"⏱ کاربر به مدت {minutes} دقیقه ساکت شد.")
+    bot.reply_to(message, f"⏱ کاربر به مدت {minutes} دقیقه\n سکوت شد")
 
 
 
