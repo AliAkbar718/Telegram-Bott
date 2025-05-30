@@ -203,6 +203,39 @@ def demote(m):
             bot.reply_to(m, "ادمین برکنار شد")
         else:
             bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
+
+@bot.message_handler(func=lambda m: m.text.startswith('سکوت تایمی'))
+def timed_restrict(m):
+    if not m.reply_to_message:
+        bot.reply_to(m, "برای سکوت کردن، روی پیام کاربر ریپلای کن و بعد بنویس مثلاً: سکوت 5")
+        return
+
+    user_id = m.reply_to_message.from_user.id
+    chat_id = m.chat.id
+    sender_id = m.from_user.id
+
+    if not is_admin(chat_id, sender_id):
+        bot.reply_to(m, "فقط ادمین‌ها می‌تونن کاربری رو سکوت کنن.")
+        return
+
+    try:
+        minutes = int(m.text.split(' ')[1])
+        until_time = int(time.time()) + (minutes * 60)
+
+        permissions = types.ChatPermissions(can_send_messages=False)
+
+        bot.restrict_chat_member(
+            chat_id=chat_id,
+            user_id=user_id,
+            permissions=permissions,
+            until_date=until_time
+        )
+
+        bot.reply_to(m, f"✅ کاربر {m.reply_to_message.from_user.first_name} به مدت {minutes} دقیقه سکوت شد.")
+
+    except (IndexError, ValueError):
+        bot.reply_to(m, "فرمت اشتباهه. مثلاً بنویس: سکوت 10")
+            
             
             
 
