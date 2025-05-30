@@ -138,7 +138,7 @@ def unban(m):
 @bot.message_handler(func=lambda m: m.text.strip() == 'سکوت')
 def mute_forever(message):
     if not message.reply_to_message:
-        return bot.reply_to(message, "برای سکوت دائم،\n\n روی پیام کاربر ریپلای کن ")
+        return bot.reply_to(message, "برای سکوت دائم،\n روی پیام کاربر ریپلای کن ")
 
     if not is_admin(message.chat.id, message.from_user.id):
         return bot.reply_to(message, "فقط ادمین‌ها می‌تونن سکوت کنن.")
@@ -149,7 +149,7 @@ def mute_forever(message):
         permissions=types.ChatPermissions(can_send_messages=False)
     )
 
-    bot.reply_to(message, "✅ کاربر به‌طور دائم سکوت شد.")
+    bot.reply_to(message, "کاربر به‌طور دائم سکوت شد✅")
 
 
 
@@ -315,7 +315,7 @@ def handle_all_messages(message):
     first_name = message.from_user.first_name
 
     # جلوگيری از درگیری با دستورات مدیریتی
-    if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین']:
+    if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین', 'سکوت ']:
         return
 
     if text == 'مدیریت گروه':
