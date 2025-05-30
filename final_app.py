@@ -135,7 +135,7 @@ def unban(m):
             bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
 
 # سکوت
-@bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('سکوت'))
+@bot.message_handler(func=lambda m: m.text == 'سکوت')
 def restrict(m):
     print("دستور سکوت اجرا شد:", m.text)
     if is_admin(m.chat.id, m.from_user.id):
