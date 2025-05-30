@@ -319,7 +319,7 @@ def handle_all_messages(message):
         return
 
     if text == 'مدیریت گروه':
-        bot.reply_to(message, 'برای استفاده از امکانات مدیریتی، ربات را به گروه اضافه و ادمین کنید.')
+        bot.reply_to(message, 'برای استفاده از امکانات مدیریتی،\n ابتدا ربات را به گروه خود اضافه و سپس ادمین کامل کنید ')
 
     elif text == 'ارتباط با ما':
         bot.reply_to(message, 'آیدی سازنده ربات: @AliamA7931')
