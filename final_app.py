@@ -148,6 +148,36 @@ def restrict(m):
             bot.reply_to(m, "کاربر سکوت شد.")
         else:
            bot.reply_to(m, "روی پیام کاربر ریپلای کن")
+           
+           
+def mute_user(message):
+    if not message.reply_to_message:
+        return bot.reply_to(message, "لطفاً روی پیام کاربر ریپلای کن و بنویس: سکوت 5")
+
+    try:
+        # بررسی ادمین بودن اجراکننده
+        if not is_admin(message.chat.id, message.from_user.id):
+            return bot.reply_to(message, "فقط ادمین‌ها می‌تونن کاربری رو سکوت کنن.")
+
+        # استخراج مدت از متن
+        minutes = int(message.text.split(' ')[1])
+        user_id = message.reply_to_message.from_user.id
+        until_time = int(time.time()) + (minutes * 60)
+
+        bot.restrict_chat_member(
+            chat_id=message.chat.id,
+            user_id=user_id,
+            permissions=types.ChatPermissions(can_send_messages=False),
+            until_date=until_time
+        )
+
+        bot.reply_to(message, f"✅ کاربر {message.reply_to_message.from_user.first_name} به مدت {minutes} دقیقه سکوت شد.")
+
+    except (IndexError, ValueError):
+        bot.reply_to(message, "فرمت اشتباهه. مثلاً بنویس: سکوت 10")
+    except Exception as e:
+        print("خطا در سکوت:", e)
+        bot.reply_to(message, "❌ خطایی در اجرای سکوت رخ داد.")           
    
 
 # حذف سکوت
@@ -203,42 +233,12 @@ def demote(m):
             bot.reply_to(m, "ادمین برکنار شد")
         else:
             bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
-
-@bot.message_handler(func=lambda m: m.text.startswith('سکوت تایمی'))
-def timed_restrict(m):
-    if not m.reply_to_message:
-        bot.reply_to(m, "برای سکوت کردن تایمی،\n\n روی پیام کاربر ریپلای کن و بعد\n مثلاً بنویس: سکوت 5")
-        return
-
-    user_id = m.reply_to_message.from_user.id
-    chat_id = m.chat.id
-    sender_id = m.from_user.id
-
-    if not is_admin(chat_id, sender_id):
-        bot.reply_to(m, "فقط ادمین‌ها می‌تونن کاربری رو سکوت کنن.")
-        return
-
-    try:
-        minutes = int(m.text.split(' ')[1])
-        until_time = int(time.time()) + (minutes * 60)
-
-        permissions = types.ChatPermissions(can_send_messages=False)
-
-        bot.restrict_chat_member(
-            chat_id=chat_id,
-            user_id=user_id,
-            permissions=permissions,
-            until_date=until_time
-        )
-
-        bot.reply_to(m, f"✅ کاربر {m.reply_to_message.from_user.first_name} به مدت {minutes} دقیقه سکوت شد.")
-
-    except (IndexError, ValueError):
-        bot.reply_to(m, "فرمت اشتباهه❌\n\n مثلاً بنویس: سکوت 10")
-            
-            
             
 
+
+
+            
+            
         
 # -------------------- توابع کمکی --------------------
 
