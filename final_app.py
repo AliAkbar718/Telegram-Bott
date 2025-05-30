@@ -141,7 +141,7 @@ def mute_forever(message):
         return bot.reply_to(message, "برای سکوت دائم،\n روی پیام کاربر ریپلای کن ")
 
     if not is_admin(message.chat.id, message.from_user.id):
-        return bot.reply_to(message, "فقط ادمین‌ها می‌تونن سکوت کنن.")
+        return bot.reply_to(message, "فقط ادمین‌ها می‌تونن سکوت کنن")
 
     bot.restrict_chat_member(
         chat_id=message.chat.id,
@@ -149,7 +149,7 @@ def mute_forever(message):
         permissions=types.ChatPermissions(can_send_messages=False)
     )
 
-    bot.reply_to(message, "کاربر به‌طور دائم سکوت شد✅")
+    bot.reply_to(message, "کاربر به صورت دائم سکوت شد 🔕")
 
 
 
@@ -208,7 +208,7 @@ def promote(m):
                 can_pin_messages=True,
                 can_promote_members=True
             )
-            bot.reply_to(m, "کاربر به ادمین ارتقا یافت")
+            bot.reply_to(m, "کاربر به ادمین🤵‍♂️ارتقا یافت")
         else:
             bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
 
@@ -227,8 +227,8 @@ def demote(m):
                 can_pin_messages=False,
                 can_promote_members=False
             )
-            bot.reply_to(m, "ادمین برکنار شد")
-        else:
+            bot.reply_to(m, "ادمین برکنار🚷 شد")
+        else: 
             bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
             
 
@@ -286,7 +286,7 @@ def start(message):
 
         bot.send_message(
             chat_id,
-            "سلام من علی بات 🤖 هستم\n\nاز منوی زیر یکی از قابلیت‌ها رو انتخاب کن:",
+            "سلام من علی بات 🤖 هستم\n\nاز منوی زیر در صفحه کلید یکی از قابلیت‌ها رو انتخاب کن:👇",
             reply_markup=keyboard
         )
 
