@@ -227,12 +227,58 @@ def demote(m):
                 can_pin_messages=False,
                 can_promote_members=False
             )
-            bot.reply_to(m, "ادمین برکنار🚷 شد")
+            bot.reply_to(m, "ادمین برکنار📛 شد")
         else: 
             bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
             
 
+@bot.message_handler(func=lambda m: m.text == 'لیست')
+def show_list_menu(message):
+    markup = types.InlineKeyboardMarkup(row_width=2)
 
+    markup.add(
+        types.InlineKeyboardButton("مدیریت گروه 🤵‍♂️", callback_data='group'),
+        types.InlineKeyboardButton("بیوگرافی 🗨️", callback_data='bio'),
+        types.InlineKeyboardButton("جوک 😄", callback_data='joke'),
+        types.InlineKeyboardButton("فونت اسم ♍", callback_data='font'),
+        types.InlineKeyboardButton("زبان هخامنشی 𐎠", callback_data='persian'),
+        types.InlineKeyboardButton("دانستنی ⁉️", callback_data='info'),
+        types.InlineKeyboardButton("ارتباط با ما 📞", callback_data='contact')
+    )
+
+    bot.send_message(
+        message.chat.id,
+        "📋 لطفاً یکی از گزینه‌های زیر را انتخاب کن:",
+        reply_markup=markup
+    )
+
+
+@bot.callback_query_handler(func=lambda call: call.data.startswith('list_'))
+def handle_list_buttons(call):
+    data = call.data
+
+    if data == 'list_group':
+        bot.send_message(call.message.chat.id, "🤵‍♂️ برای مدیریت گروه، ربات باید ادمین کامل باشه.")
+    
+    elif data == 'list_bio':
+        bot.send_message(call.message.chat.id, "📝 بیوگرافی نمونه:\nمن یه رباتم ولی احساساتی ☺️")
+
+    elif data == 'list_joke':
+        bot.send_message(call.message.chat.id, "😂 یه روز یه ربات میره مدرسه، بهش میگن چرا اومدی؟ می‌گه اومدم آپدیت شم!")
+
+    elif data == 'list_font':
+        bot.send_message(call.message.chat.id, "🅰️ لطفاً اسمتو بفرست تا برات با فونت‌های فانتزی نشون بدم.")
+
+    elif data == 'list_persian':
+        bot.send_message(call.message.chat.id, "𐎠 تبدیل به خط باستانی فعاله. متنت رو بفرست!")
+
+    elif data == 'list_info':
+        bot.send_message(call.message.chat.id, "⁉️ آیا می‌دانستید مغز انسان سریع‌تر از کامپیوتره؟")
+
+    elif data == 'list_contact':
+        bot.send_message(call.message.chat.id, "📞 تماس با سازنده:\n@AliamA7931")
+
+    bot.answer_callback_query(call.id)  # حذف لودینگ دکمه
 
             
             
@@ -315,7 +361,7 @@ def handle_all_messages(message):
     first_name = message.from_user.first_name
 
     # جلوگيری از درگیری با دستورات مدیریتی
-    if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین', 'سکوت ']:
+    if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین', 'سکوت ', 'لیست']:
         return
 
     if text == 'مدیریت گروه':
@@ -438,19 +484,19 @@ def handle_all_messages(message):
                 pass
         return
 
-    # پاسخ به لیست
-    if text == 'لیست':
-            bot.send_message(chat_id,
-                '🤵‍♂️-<code> مدیریت گروه</code>\n\n'
-                '🗨️-<code> بیوگرافی</code>\n\n'
-                '🔠-<code> اصطلاحات انگلیسی</code>\n\n'
-                '❓-<code> جرعت حقیقت</code>\n\n'
-                '😄-<code> جوک</code>\n\n'
-                '<code>زبان هخامنشی</code> -𐎠\n\n'
-                '⁉️-<code> دانستنی</code>\n\n'
-                '📞-<code> ارتباط با ما</code>\n\n'
-                '🔁-<code> ترجمه متن </code>\n\n'
-                '<b>برای کپی، روی متن‌ها بزن</b>', parse_mode="HTML")
+    # # پاسخ به لیست
+    # if text == 'لیست':
+    #         bot.send_message(chat_id,
+    #             '🤵‍♂️-<code> مدیریت گروه</code>\n\n'
+    #             '🗨️-<code> بیوگرافی</code>\n\n'
+    #             '🔠-<code> اصطلاحات انگلیسی</code>\n\n'
+    #             '❓-<code> جرعت حقیقت</code>\n\n'
+    #             '😄-<code> جوک</code>\n\n'
+    #             '<code>زبان هخامنشی</code> -𐎠\n\n'
+    #             '⁉️-<code> دانستنی</code>\n\n'
+    #             '📞-<code> ارتباط با ما</code>\n\n'
+    #             '🔁-<code> ترجمه متن </code>\n\n'
+    #             '<b>برای کپی، روی متن‌ها بزن</b>', parse_mode="HTML")
 
 
 weekday_names = {
