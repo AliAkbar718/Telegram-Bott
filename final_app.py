@@ -207,7 +207,7 @@ def demote(m):
 @bot.message_handler(func=lambda m: m.text.startswith('سکوت تایمی'))
 def timed_restrict(m):
     if not m.reply_to_message:
-        bot.reply_to(m, "برای سکوت کردن،\n روی پیام کاربر ریپلای کن و بعد بنویس\n\n مثلاً: سکوت 5")
+        bot.reply_to(m, "برای سکوت کردن،\n روی پیام کاربر ریپلای کن و بعد بنویس مثلاً: سکوت 5")
         return
 
     user_id = m.reply_to_message.from_user.id
@@ -234,7 +234,7 @@ def timed_restrict(m):
         bot.reply_to(m, f"✅ کاربر {m.reply_to_message.from_user.first_name} به مدت {minutes} دقیقه سکوت شد.")
 
     except (IndexError, ValueError):
-        bot.reply_to(m, "فرمت اشتباهه. مثلاً بنویس: سکوت 10")
+        bot.reply_to(m, "فرمت اشتباهه❌\n\n مثلاً بنویس: سکوت 10")
             
             
             
