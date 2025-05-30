@@ -134,30 +134,45 @@ def unban(m):
         else:
             bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
 
-
+# سکوت
 @bot.message_handler(func=lambda m: m.text.strip() == 'سکوت')
-def mute_default(message):
-    if message.reply_to_message:
-        bot.restrict_chat_member(
-            message.chat.id,
-            message.reply_to_message.from_user.id,
-            permissions=types.ChatPermissions(can_send_messages=False)
-        )
-        bot.reply_to(message, "✅ کاربر بدون محدودیت زمانی ساکت شد.")
+def mute_forever(message):
+    if not message.reply_to_message:
+        return bot.reply_to(message, "برای سکوت دائم،\n\n روی پیام کاربر ریپلای کن ")
 
-@bot.message_handler(func=lambda m: m.text.startswith('سکوت تایمی') and m.text[6:].isdigit())
+    if not is_admin(message.chat.id, message.from_user.id):
+        return bot.reply_to(message, "فقط ادمین‌ها می‌تونن سکوت کنن.")
+
+    bot.restrict_chat_member(
+        chat_id=message.chat.id,
+        user_id=message.reply_to_message.from_user.id,
+        permissions=types.ChatPermissions(can_send_messages=False)
+    )
+
+    bot.reply_to(message, "✅ کاربر به‌طور دائم سکوت شد.")
+
+
+
+
+@bot.message_handler(func=lambda m: m.text.startswith('سکوت ') and m.text[6:].isdigit())
 def mute_timed(message):
-    if message.reply_to_message:
-        minutes = int(message.text[6:])
-        until = int(time.time()) + (minutes * 60)
-        bot.restrict_chat_member(
-            message.chat.id,
-            message.reply_to_message.from_user.id,
-            permissions=types.ChatPermissions(can_send_messages=False),
-            until_date=until
-        )
-        bot.reply_to(message, f"⏳ کاربر برای {minutes} دقیقه سکوت شد.")
+    if not message.reply_to_message:
+        return bot.reply_to(message, "برای سکوت زمان‌دار،\n\n روی پیام کاربر ریپلای کن  و مثلا بنویس: سکوت 5")
 
+    if not is_admin(message.chat.id, message.from_user.id):
+        return bot.reply_to(message, "فقط ادمین‌ها می‌تونن سکوت کنن.")
+
+    minutes = int(message.text[6:])
+    until = int(time.time()) + (minutes * 60)
+
+    bot.restrict_chat_member(
+        chat_id=message.chat.id,
+        user_id=message.reply_to_message.from_user.id,
+        permissions=types.ChatPermissions(can_send_messages=False),
+        until_date=until
+    )
+
+    bot.reply_to(message, f"⏱ کاربر به مدت {minutes} دقیقه ساکت شد.")
 
 
 
@@ -300,7 +315,7 @@ def handle_all_messages(message):
     first_name = message.from_user.first_name
 
     # جلوگيری از درگیری با دستورات مدیریتی
-    if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین', 'سکوت تایمی']:
+    if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین']:
         return
 
     if text == 'مدیریت گروه':
