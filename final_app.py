@@ -231,54 +231,23 @@ def demote(m):
         else: 
             bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
             
-
-@bot.message_handler(func=lambda m: m.text == 'لیست')
-def show_list_menu(message):
-    markup = types.InlineKeyboardMarkup(row_width=2)
-
-    markup.add(
-        types.InlineKeyboardButton("مدیریت گروه 🤵‍♂️", callback_data='group'),
-        types.InlineKeyboardButton("بیوگرافی 🗨️", callback_data='bio'),
-        types.InlineKeyboardButton("جوک 😄", callback_data='joke'),
-        types.InlineKeyboardButton("فونت اسم ♍", callback_data='font'),
-        types.InlineKeyboardButton("زبان هخامنشی 𐎠", callback_data='persian'),
-        types.InlineKeyboardButton("دانستنی ⁉️", callback_data='info'),
-        types.InlineKeyboardButton("ارتباط با ما 📞", callback_data='contact')
+            
+@bot.message_handler(func=lambda m: m.text.lower() == 'لیست')
+def show_command_list(message):
+    text = (
+        "📋 لیست دستورات:\n\n"
+        "🤵‍♂️ /group - مدیریت گروه\n"
+        "🗨️ /bio - بیوگرافی\n"
+        "😄 /joke - جوک\n"
+        "🔠 /terms - اصطلاحات انگلیسی\n"
+        "❓ /dare - جرأت حقیقت\n"
+        "𐎠 /ancient - زبان هخامنشی\n"
+        "⁉️ /facts - دانستنی\n"
+        "📞 /contact - ارتباط با ما\n"
+        "🔁 /translate - ترجمه متن\n"
     )
+    bot.send_message(message.chat.id, text)
 
-    bot.send_message(
-        message.chat.id,
-        "📋 لطفاً یکی از گزینه‌های زیر را انتخاب کن:",
-        reply_markup=markup
-    )
-
-
-@bot.callback_query_handler(func=lambda call: call.data.startswith('list_'))
-def handle_list_buttons(call):
-    data = call.data
-
-    if data == 'list_group':
-        bot.send_message(call.message.chat.id, "🤵‍♂️ برای مدیریت گروه، ربات باید ادمین کامل باشه.")
-    
-    elif data == 'list_bio':
-        bot.send_message(call.message.chat.id, "📝 بیوگرافی نمونه:\nمن یه رباتم ولی احساساتی ☺️")
-
-    elif data == 'list_joke':
-        bot.send_message(call.message.chat.id, "😂 یه روز یه ربات میره مدرسه، بهش میگن چرا اومدی؟ می‌گه اومدم آپدیت شم!")
-
-    elif data == 'list_font':
-        bot.send_message(call.message.chat.id, "🅰️ لطفاً اسمتو بفرست تا برات با فونت‌های فانتزی نشون بدم.")
-
-    elif data == 'list_persian':
-        bot.send_message(call.message.chat.id, "𐎠 تبدیل به خط باستانی فعاله. متنت رو بفرست!")
-
-    elif data == 'list_info':
-        bot.send_message(call.message.chat.id, "⁉️ آیا می‌دانستید مغز انسان سریع‌تر از کامپیوتره؟")
-
-    elif data == 'list_contact':
-        bot.send_message(call.message.chat.id, "📞 تماس با سازنده:\n@AliamA7931")
-
-    bot.answer_callback_query(call.id)  # حذف لودینگ دکمه
 
             
             
@@ -350,6 +319,63 @@ def start(message):
         bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن.")
 
 
+@bot.message_handler(commands=['group'])
+def group_handler(m):
+    bot.send_message(m.chat.id, "برای استفاده از امکانات مدیریتی،\n ابتدا ربات را به گروه خود اضافه و سپس ادمین کامل کنید")
+
+@bot.message_handler(commands=['bio'])
+def bio_handler(m):
+    bios = [
+        "📝 ساکت ولی پر از حرف...",
+        "⛅ من رباتم ولی بااحساس!",
+        "✍️ من خودمم... بدون کپشن!"
+    ]
+    bot.send_message(m.chat.id, random.choice(bios))
+
+@bot.message_handler(commands=['joke'])
+def joke_handler(m):
+    jokes = [
+        "😂 یه ربات رفت خواستگاری، گفتن شغلت چیه؟ گفت: پردازش احساسات!",
+        "🤖 رباته می‌ره بازار، همه فکر می‌کنن مودم فروشه 😅"
+    ]
+    bot.send_message(m.chat.id, random.choice(jokes))
+
+@bot.message_handler(commands=['terms'])
+def terms_handler(m):
+    terms = [
+        "🔠 Break a leg → موفق باشی",
+        "🔠 Hit the sack → رفتن برای خواب",
+        "🔠 Once in a blue moon → خیلی به‌ندرت"
+    ]
+    bot.send_message(m.chat.id, random.choice(terms))
+
+@bot.message_handler(commands=['dare'])
+def dare_handler(m):
+    bot.send_message(m.chat.id, "❓ جرأت یا حقیقت؟ اول بگو کدوم رو می‌خوای 😏")
+
+@bot.message_handler(commands=['ancient'])
+def ancient_handler(m):
+    bot.send_message(m.chat.id, "𐎠 فعاله! متنتو بفرست تا به خط باستانی تبدیل کنم (فعلاً نمونش آماده نیست 😅)")
+
+@bot.message_handler(commands=['facts'])
+def facts_handler(m):
+    facts = [
+        "🧠 آیا می‌دانستی مغز انسان ۸۰٪ آب داره؟",
+        "🐘 فیل‌ها نمی‌تونن بپرن!",
+        "🌌 خورشید هر ۸ دقیقه نورش به زمین می‌رسه."
+    ]
+    bot.send_message(m.chat.id, random.choice(facts))
+
+@bot.message_handler(commands=['contact'])
+def contact_handler(m):
+    bot.send_message(m.chat.id, "📞 برای ارتباط با سازنده:\n@AliamA7931")
+
+@bot.message_handler(commands=['translate'])
+def translate_handler(m):
+    user_translation_mode[m.from_user.id] = True
+    bot.send_message(m.chat.id, "✍️ لطفاً متنی که می‌خوای ترجمه کنم رو ارسال کن.")
+
+
 
 # -------------------- پیام‌های عمومی --------------------
 
@@ -361,7 +387,7 @@ def handle_all_messages(message):
     first_name = message.from_user.first_name
 
     # جلوگيری از درگیری با دستورات مدیریتی
-    if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین', 'سکوت ', 'لیست', 'list_']:
+    if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین', 'سکوت ', 'لیست']:
         return
 
     if text == 'مدیریت گروه':
