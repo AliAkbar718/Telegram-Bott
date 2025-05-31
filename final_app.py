@@ -13,24 +13,70 @@ import random
 import pytz
 from googletrans import Translator
 from telegram import Update
-from telegram.ext import Dispatcher, MessageHandler, Filters
-from telegram.ext import CallbackContext
-import threading
-
+from telegram import Update, bot
+from telegram.ext import Dispatcher, MessageHandler, Filters, CallbackContext
 
 
 
 TOKEN = '7579645804:AAHt5O6hHdXtdigsQQ-WMGiIm7cJexySTVc'
 CHANNEL_USERNAME = '@rap_family1' 
 bot = telebot.TeleBot(TOKEN)
+app = Flask(__name__)
 
 
+BAD_WORDS = [
+    'کیر', 'کص', 'کس', 'کونی', 'جق', 'جق زدن', 'به تخمم', 'حروم زاده',
+    'کص نگو', 'خایه', 'بی ناموس', 'کونکش', 'به کیرم', 'حرومی',
+    'خارتو گاییدم', 'کص خارت', 'کص مغز', 'کیری', 'کیر بخور', 'کیرم',
+    'کسکش', 'کیرم', 'کیرت', 'خار کصده', 'کون', 'کص مار',
+    'مادر جنده', 'پدر جنده', 'مادرتو', 'پدرتو',
+    'جنده', 'کیر خور', 'کس خر', 'کیر خر', 'حروم لقمه',
+    'گاییدم', 'گاییدن', 'میکنمت', 'بکنمت', 'کردمت', 'گاییدمت',
+    'شل ناموس', 'کاصم', 'کاسم', 'کاص', 'کاس', 'کاص مار', 'کونده'
+    'تخم سگ', 'تخم حروم', 'ننه جنده', 'ننه کصده', 'ننه کونده', 'زن کصده',
+    'زن کاصده','پدر سگ', 'سگ پدر', 'مادر سگ', 'زن جنده', 'زنتو گاییدم', 'زنتو کردم'
+]
+
+def filter_bad_words(update: Update, context: CallbackContext):
+    msg = update.message
+    if not msg or not msg.text:
+        return
+
+    text = msg.text.lower()
+    if any(bad in text for bad in BAD_WORDS):
+        user_id = msg.from_user.id
+        chat_id = msg.chat.id
+
+        try:
+            chat_member = context.bot.get_chat_member(chat_id, user_id)
+            status = chat_member.status  # 'creator', 'administrator', 'member'
+
+            if status in ['creator', 'administrator']:
+                context.bot.send_message(
+                    chat_id=chat_id,
+                    text=f"⚠️ پیام حاوی کلمات نامناسب بود اما چون فرستنده مدیر بود، حذف نشد.",
+                    reply_to_message_id=msg.message_id
+                )
+            else:
+                msg.delete()
+                context.bot.send_message(
+                    chat_id=chat_id,
+                    text="🚫 پیام نامناسب حذف شد.",
+                    reply_to_message_id=msg.message_id
+                )
+
+        except Exception as e:
+            print("❌ خطا:", e)
+
+# راه‌اندازی dispatcher
+dispatcher = Dispatcher(bot, None, workers=1, use_context=True)
+dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, filter_bad_words))
 
 
 translator = Translator()
 user_translation_mode = {}
 
-app = Flask(__name__)
+
 
 WEBHOOK_URL = 'https://telegram-bott-mdb1.onrender.com'
 bot.remove_webhook()
@@ -670,38 +716,6 @@ def welcome_new_user(message):
 @bot.message_handler(content_types=['left_chat_member'])
 def handle_left_member(message):
     bot.reply_to(message, "به سلامت👋")
-
-BAD_WORDS = [
-    'کیر', 'کص', 'کس', 'کونی', 'جق', 'جق زدن', 'به تخمم', 'حروم زاده',
-    'کص نگو', 'خایه', 'بی ناموس', 'کونکش', 'به کیرم', 'حرومی',
-    'خارتو گاییدم', 'کص خارت', 'کص مغز', 'کیری', 'کیر بخور', 'کیرم',
-    'کسکش', 'کیرم', 'کیرت', 'خار کصده', 'کون', 'کص مار',
-    'مادر جنده', 'پدر جنده', 'مادرتو', 'پدرتو',
-    'جنده', 'کیر خور', 'کس خر', 'کیر خر', 'حروم لقمه',
-    'گاییدم', 'گاییدن', 'میکنمت', 'بکنمت', 'کردمت', 'گاییدمت',
-    'شل ناموس', 'کاصم', 'کاسم', 'کاص', 'کاس', 'کاص مار', 'کونده'
-    'تخم سگ', 'تخم حروم', 'ننه جنده', 'ننه کصده', 'ننه کونده', 'زن کصده',
-    'زن کاصده','پدر سگ', 'سگ پدر', 'مادر سگ', 'زن جنده', 'زنتو گاییدم', 'زنتو کردم'
-]
-
-def filter_bad_words(update: Update, context: CallbackContext):
-    if not update.message or not update.message.text:
-        return
-
-    text = update.message.text.lower()
-    if any(word in text for word in BAD_WORDS):
-        try:
-            update.message.delete()
-            context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text="🚫 پیام حاوی کلمات نامناسب بود و حذف شد.",
-                reply_to_message_id=update.message.message_id
-            )
-        except Exception as e:
-            print("خطا در حذف پیام:", e)
-
-dispatcher = Dispatcher(bot, None, workers=1, use_context=True)
-dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, filter_bad_words))
 
 
 
