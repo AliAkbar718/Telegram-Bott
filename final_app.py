@@ -25,7 +25,7 @@ user_translation_mode = {}
 
 app = Flask(__name__)
 
-WEBHOOK_URL = 'https://telegram-bott-xuhm.onrender.com/webhook'
+WEBHOOK_URL = 'https://telegram-bott-mdb1.onrender.com'
 bot.remove_webhook()
 bot.set_webhook(url=WEBHOOK_URL)
 
