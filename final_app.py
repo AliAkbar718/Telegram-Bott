@@ -25,37 +25,6 @@ CHANNEL_USERNAME = '@rap_family1'
 bot = telebot.TeleBot(TOKEN)
 
 
-BAD_WORDS = [
-    'کیر', 'کص', 'کس', 'کونی', 'جق', 'جق زدن', 'به تخمم', 'حروم زاده',
-    'کص نگو', 'خایه', 'بی ناموس', 'کونکش', 'به کیرم', 'حرومی',
-    'خارتو گاییدم', 'کص خارت', 'کص مغز', 'کیری', 'کیر بخور', 'کیرم',
-    'کسکش', 'کیرم', 'کیرت', 'خار کصده', 'کون', 'کص مار',
-    'مادر جنده', 'پدر جنده', 'مادرتو', 'پدرتو',
-    'جنده', 'کیر خور', 'کس خر', 'کیر خر', 'حروم لقمه',
-    'گاییدم', 'گاییدن', 'میکنمت', 'بکنمت', 'کردمت', 'گاییدمت',
-    'شل ناموس', 'کاصم', 'کاسم', 'کاص', 'کاس', 'کاص مار', 'کونده'
-    'تخم سگ', 'تخم حروم', 'ننه جنده', 'ننه کصده', 'ننه کونده', 'زن کصده',
-    'زن کاصده','پدر سگ', 'سگ پدر', 'مادر سگ', 'زن جنده', 'زنتو گاییدم', 'زنتو کردم'
-]
-
-def filter_bad_words(update: Update, context: CallbackContext):
-    if not update.message or not update.message.text:
-        return
-
-    text = update.message.text.lower()
-    if any(word in text for word in BAD_WORDS):
-        try:
-            update.message.delete()
-            context.bot.send_message(
-                chat_id=update.effective_chat.id,
-                text="🚫 پیام حاوی کلمات نامناسب بود و حذف شد.",
-                reply_to_message_id=update.message.message_id
-            )
-        except Exception as e:
-            print("خطا در حذف پیام:", e)
-
-dispatcher = Dispatcher(bot, None, workers=1, use_context=True)
-dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, filter_bad_words))
 
 
 translator = Translator()
@@ -623,8 +592,6 @@ def handle_all_messages(message):
     elif text == 'بات':
       bot.send_message(chat_id, f'جان @{message.from_user.username} مه ره کار داشتی؟\n\n 🔸 برای اطلاع داشتن از مه قابلیت کلمه <b> «لیست» </b> ره راهی هاکان', parse_mode="HTML")
 
-    elif text == 'کیر':
-        bot.set_message_reaction(chat_id=chat_id, message_id=message.message_id, reaction=[types.ReactionTypeEmoji(emoji='🖕')])
 
 
     # حذف لینک با اخطار
@@ -703,6 +670,38 @@ def welcome_new_user(message):
 @bot.message_handler(content_types=['left_chat_member'])
 def handle_left_member(message):
     bot.reply_to(message, "به سلامت👋")
+
+BAD_WORDS = [
+    'کیر', 'کص', 'کس', 'کونی', 'جق', 'جق زدن', 'به تخمم', 'حروم زاده',
+    'کص نگو', 'خایه', 'بی ناموس', 'کونکش', 'به کیرم', 'حرومی',
+    'خارتو گاییدم', 'کص خارت', 'کص مغز', 'کیری', 'کیر بخور', 'کیرم',
+    'کسکش', 'کیرم', 'کیرت', 'خار کصده', 'کون', 'کص مار',
+    'مادر جنده', 'پدر جنده', 'مادرتو', 'پدرتو',
+    'جنده', 'کیر خور', 'کس خر', 'کیر خر', 'حروم لقمه',
+    'گاییدم', 'گاییدن', 'میکنمت', 'بکنمت', 'کردمت', 'گاییدمت',
+    'شل ناموس', 'کاصم', 'کاسم', 'کاص', 'کاس', 'کاص مار', 'کونده'
+    'تخم سگ', 'تخم حروم', 'ننه جنده', 'ننه کصده', 'ننه کونده', 'زن کصده',
+    'زن کاصده','پدر سگ', 'سگ پدر', 'مادر سگ', 'زن جنده', 'زنتو گاییدم', 'زنتو کردم'
+]
+
+def filter_bad_words(update: Update, context: CallbackContext):
+    if not update.message or not update.message.text:
+        return
+
+    text = update.message.text.lower()
+    if any(word in text for word in BAD_WORDS):
+        try:
+            update.message.delete()
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="🚫 پیام حاوی کلمات نامناسب بود و حذف شد.",
+                reply_to_message_id=update.message.message_id
+            )
+        except Exception as e:
+            print("خطا در حذف پیام:", e)
+
+dispatcher = Dispatcher(bot, None, workers=1, use_context=True)
+dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, filter_bad_words))
 
 
 
