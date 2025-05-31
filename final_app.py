@@ -12,33 +12,29 @@ from flask import Flask, request
 import random
 import pytz
 from googletrans import Translator
-from telegram import Update
-from telegram import Update, bot
 from telegram.ext import Dispatcher, MessageHandler, Filters, CallbackContext
 import re
+from telegram import Bot, Update
+import logging
 
 
 
 TOKEN = '7579645804:AAHt5O6hHdXtdigsQQ-WMGiIm7cJexySTVc'
 CHANNEL_USERNAME = '@rap_family1' 
-bot = telebot.TeleBot(TOKEN)
+bot = Bot(token=TOKEN)
 app = Flask(__name__)
 
 
-# تعریف Dispatcher
+
+# تنظیمات اولیه
 dispatcher = Dispatcher(bot=bot, update_queue=None, workers=1, use_context=True)
 
-# ✅ تابع فیلتر پیام‌های زشت
-def filter_bad_words(update: Update, context: CallbackContext):
-    msg = update.message
-    if not msg or not msg.text:
-        return
+# فعال‌سازی لاگ‌ها برای دیباگ
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
-    text = msg.text.lower()
-    text = re.sub(r'[^\w\s]', '', text)  # حذف علائم نگارشی
-    text = re.sub(r'\s+', '', text)      # حذف فاصله
-
-    bad_words = ['کیر', 'کص', 'کس', 'کونی', 'جق', 'جق زدن', 'به تخمم', 'حروم زاده',
+# لیست کلمات زشت (قابل افزایش)
+bad_words = [
+  'کیر', 'کص', 'کس', 'کونی', 'جق', 'جق زدن', 'به تخمم', 'حروم زاده',
     'کص نگو', 'خایه', 'بی ناموس', 'کونکش', 'به کیرم', 'حرومی',
     'خارتو گاییدم', 'کص خارت', 'کص مغز', 'کیری', 'کیر بخور', 'کیرم',
     'کسکش', 'کیرم', 'کیرت', 'خار کصده', 'کون', 'کص مار',
@@ -47,8 +43,23 @@ def filter_bad_words(update: Update, context: CallbackContext):
     'گاییدم', 'گاییدن', 'میکنمت', 'بکنمت', 'کردمت', 'گاییدمت',
     'شل ناموس', 'کاصم', 'کاسم', 'کاص', 'کاس', 'کاص مار', 'کونده'
     'تخم سگ', 'تخم حروم', 'ننه جنده', 'ننه کصده', 'ننه کونده', 'زن کصده',
-    'زن کاصده','پدر سگ', 'سگ پدر', 'مادر سگ', 'زن جنده', 'زنتو گاییدم', 'زنتو کردم']
+    'زن کاصده','پدر سگ', 'سگ پدر', 'مادر سگ', 'زن جنده', 'زنتو گاییدم', 'زنتو کردم'
+]
 
+# تابع فیلتر پیام‌های زشت
+def filter_bad_words(update: Update, context: CallbackContext):
+    msg = update.message
+    if not msg or not msg.text:
+        return
+
+    # نرمال‌سازی متن پیام
+    text = msg.text.lower()
+    text = re.sub(r'[^\w\s]', '', text)  # حذف علائم نگارشی
+    text = re.sub(r'\s+', '', text)      # حذف فاصله‌ها
+
+    logging.info(f"بررسی پیام: {text}")
+
+    # بررسی وجود کلمات زشت
     if any(bad in text for bad in bad_words):
         user_id = msg.from_user.id
         chat_id = msg.chat.id
@@ -71,11 +82,10 @@ def filter_bad_words(update: Update, context: CallbackContext):
                     reply_to_message_id=msg.message_id
                 )
         except Exception as e:
-            print("❌ خطا در بررسی پیام:", e)
+            logging.error(f"❌ خطا در حذف پیام: {e}")
 
-# ✅ افزودن هندلر فیلتر پیام‌های زشت به دیسپچر
+# اضافه کردن هندلر پیام‌ها
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, filter_bad_words))
-
 
 
 
