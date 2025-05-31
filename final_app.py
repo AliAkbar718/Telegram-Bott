@@ -95,7 +95,7 @@ user_translation_mode = {}
 
 
 WEBHOOK_URL = 'https://telegram-bott-mdb1.onrender.com'
-bot.remove_webhook()
+bot.delete_webhook()
 bot.set_webhook(url=WEBHOOK_URL)
 
 WEBHOOK_SECRET_PATH = '/webhook'  
