@@ -1,6 +1,5 @@
-Flask
-pyTelegramBotAPI
+Flask==2.2.5
+pyTelegramBotAPI== 4.13.0
 jdatetime
 pytz
 googletrans==4.0.0-rc1
-python-telegram-bot==13.15
