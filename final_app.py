@@ -45,7 +45,6 @@ WEBHOOK_URL = 'https://telegram-bott-mdb1.onrender.com'
 bot.remove_webhook()
 bot.set_webhook(url=WEBHOOK_URL)
 
-WEBHOOK_SECRET_PATH = '/webhook'  
  
 farsi_to_cuneiform = {
     'ا': '𐎠', 'آ': '𐎠', 'ب': '𐎲', 'پ': '𐎱', 'ت': '𐎫', 'ث': '𐎰', 'تو': '𐎬', 'طو': '𐎬', 'ج': '𐎢', 'جی': '𐎪', 'چ': '𐎨', 'ح': '𐏃', 'خ': '𐎧',
@@ -683,15 +682,13 @@ def filter_bad_messages(message):
 
 
 
-@app.route(WEBHOOK_SECRET_PATH, methods=['POST'])
+@app.route('/webhook', methods=['POST'])
 def webhook():
-    update = telebot.types.Update.de_json(request.data.decode('utf-8'))
-    bot.process_new_updates([update])
-    return 'ok', 200
-
-@app.route('/', methods=['GET'])
-def index():
-    return 'ربات فعال است', 200
+    if request.headers.get('content-type') == 'application/json':
+        update = telebot.types.Update.de_json(request.get_data().decode('utf-8'))
+        bot.process_new_updates([update])
+        return '', 200
+    return 'Invalid', 403
    
 
         
