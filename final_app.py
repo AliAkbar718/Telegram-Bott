@@ -26,7 +26,7 @@ app = Flask(__name__)
 
 
 # تعریف Dispatcher
-dispatcher = Dispatcher(bot=bot, update_queue=None, workers=0, use_context=True)
+dispatcher = Dispatcher(bot=bot, update_queue=None, workers=1, use_context=True)
 
 # ✅ تابع فیلتر پیام‌های زشت
 def filter_bad_words(update: Update, context: CallbackContext):
