@@ -681,6 +681,15 @@ def webhook():
         return '', 200
     return 'Invalid', 403
    
+@app.route('/')
+def index():
+    return "🤖 Bot is alive!", 200
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    # کدهای دریافت پیام از تلگرام اینجاست
+    return "OK", 200   
+   
 
         
 if __name__ == '__main__':
