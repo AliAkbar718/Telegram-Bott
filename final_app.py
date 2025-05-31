@@ -15,6 +15,7 @@ from googletrans import Translator
 from telegram import Update
 from telegram import Update, bot
 from telegram.ext import Dispatcher, MessageHandler, Filters, CallbackContext
+import re
 
 
 
@@ -24,8 +25,20 @@ bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
 
-BAD_WORDS = [
-    'کیر', 'کص', 'کس', 'کونی', 'جق', 'جق زدن', 'به تخمم', 'حروم زاده',
+# تعریف Dispatcher
+dispatcher = Dispatcher(bot=bot, update_queue=None, workers=0, use_context=True)
+
+# ✅ تابع فیلتر پیام‌های زشت
+def filter_bad_words(update: Update, context: CallbackContext):
+    msg = update.message
+    if not msg or not msg.text:
+        return
+
+    text = msg.text.lower()
+    text = re.sub(r'[^\w\s]', '', text)  # حذف علائم نگارشی
+    text = re.sub(r'\s+', '', text)      # حذف فاصله
+
+    bad_words = ['کیر', 'کص', 'کس', 'کونی', 'جق', 'جق زدن', 'به تخمم', 'حروم زاده',
     'کص نگو', 'خایه', 'بی ناموس', 'کونکش', 'به کیرم', 'حرومی',
     'خارتو گاییدم', 'کص خارت', 'کص مغز', 'کیری', 'کیر بخور', 'کیرم',
     'کسکش', 'کیرم', 'کیرت', 'خار کصده', 'کون', 'کص مار',
@@ -34,27 +47,20 @@ BAD_WORDS = [
     'گاییدم', 'گاییدن', 'میکنمت', 'بکنمت', 'کردمت', 'گاییدمت',
     'شل ناموس', 'کاصم', 'کاسم', 'کاص', 'کاس', 'کاص مار', 'کونده'
     'تخم سگ', 'تخم حروم', 'ننه جنده', 'ننه کصده', 'ننه کونده', 'زن کصده',
-    'زن کاصده','پدر سگ', 'سگ پدر', 'مادر سگ', 'زن جنده', 'زنتو گاییدم', 'زنتو کردم'
-]
+    'زن کاصده','پدر سگ', 'سگ پدر', 'مادر سگ', 'زن جنده', 'زنتو گاییدم', 'زنتو کردم']
 
-def filter_bad_words(update: Update, context: CallbackContext):
-    msg = update.message
-    if not msg or not msg.text:
-        return
-
-    text = msg.text.lower()
-    if any(bad in text for bad in BAD_WORDS):
+    if any(bad in text for bad in bad_words):
         user_id = msg.from_user.id
         chat_id = msg.chat.id
 
         try:
             chat_member = context.bot.get_chat_member(chat_id, user_id)
-            status = chat_member.status  # 'creator', 'administrator', 'member'
+            status = chat_member.status
 
             if status in ['creator', 'administrator']:
                 context.bot.send_message(
                     chat_id=chat_id,
-                    text=f"⚠️ پیام حاوی کلمات نامناسب بود اما چون فرستنده مدیر بود، حذف نشد.",
+                    text="⚠️ پیام حاوی کلمات نامناسب بود اما چون فرستنده مدیر بود، حذف نشد.",
                     reply_to_message_id=msg.message_id
                 )
             else:
@@ -64,13 +70,13 @@ def filter_bad_words(update: Update, context: CallbackContext):
                     text="🚫 پیام نامناسب حذف شد.",
                     reply_to_message_id=msg.message_id
                 )
-
         except Exception as e:
-            print("❌ خطا:", e)
+            print("❌ خطا در بررسی پیام:", e)
 
-# راه‌اندازی dispatcher
-dispatcher = Dispatcher(bot, None, workers=1, use_context=True)
+# ✅ افزودن هندلر فیلتر پیام‌های زشت به دیسپچر
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, filter_bad_words))
+
+
 
 
 translator = Translator()
@@ -137,7 +143,7 @@ def handle_messages(message):
         return  # جلوگیری از برخورد با بقیه کدها در همین handler
 
 
- 
+
 
    
 user_warnings = {}
@@ -655,20 +661,7 @@ def handle_all_messages(message):
                 pass
         return
 
-    # # پاسخ به لیست
-    # if text == 'لیست':
-    #         bot.send_message(chat_id,
-    #             '🤵‍♂️-<code> مدیریت گروه</code>\n\n'
-    #             '🗨️-<code> بیوگرافی</code>\n\n'
-    #             '🔠-<code> اصطلاحات انگلیسی</code>\n\n'
-    #             '❓-<code> جرعت حقیقت</code>\n\n'
-    #             '😄-<code> جوک</code>\n\n'
-    #             '<code>زبان هخامنشی</code> -𐎠\n\n'
-    #             '⁉️-<code> دانستنی</code>\n\n'
-    #             '📞-<code> ارتباط با ما</code>\n\n'
-    #             '🔁-<code> ترجمه متن </code>\n\n'
-    #             '<b>برای کپی، روی متن‌ها بزن</b>', parse_mode="HTML")
-
+  
 
 weekday_names = {
     'Saturday': 'شنبه',
