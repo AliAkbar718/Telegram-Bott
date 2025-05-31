@@ -12,6 +12,10 @@ from flask import Flask, request
 import random
 import pytz
 from googletrans import Translator
+from telegram import Update
+from telegram.ext import Dispatcher, MessageHandler, Filters
+from telegram.ext import CallbackContext
+
 
 
 
@@ -19,6 +23,40 @@ from googletrans import Translator
 TOKEN = '7579645804:AAHt5O6hHdXtdigsQQ-WMGiIm7cJexySTVc'
 CHANNEL_USERNAME = '@rap_family1' 
 bot = telebot.TeleBot(TOKEN)
+
+
+BAD_WORDS = [
+    'کیر', 'کص', 'کس', 'کونی', 'جق', 'جق زدن', 'به تخمم', 'حروم زاده',
+    'کص نگو', 'خایه', 'بی ناموس', 'کونکش', 'به کیرم', 'حرومی',
+    'خارتو گاییدم', 'کص خارت', 'کص مغز', 'کیری', 'کیر بخور', 'کیرم',
+    'کسکش', 'کیرم', 'کیرت', 'خار کصده', 'کون', 'کص مار',
+    'مادر جنده', 'پدر جنده', 'مادرتو', 'پدرتو',
+    'جنده', 'کیر خور', 'کس خر', 'کیر خر', 'حروم لقمه',
+    'گاییدم', 'گاییدن', 'میکنمت', 'بکنمت', 'کردمت', 'گاییدمت',
+    'شل ناموس', 'کاصم', 'کاسم', 'کاص', 'کاس', 'کاص مار', 'کونده'
+    'تخم سگ', 'تخم حروم', 'ننه جنده', 'ننه کصده', 'ننه کونده', 'زن کصده',
+    'زن کاصده','پدر سگ', 'سگ پدر', 'مادر سگ', 'زن جنده', 'زنتو گاییدم', 'زنتو کردم'
+]
+
+def filter_bad_words(update: Update, context: CallbackContext):
+    if not update.message or not update.message.text:
+        return
+
+    text = update.message.text.lower()
+    if any(word in text for word in BAD_WORDS):
+        try:
+            update.message.delete()
+            context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text="🚫 پیام حاوی کلمات نامناسب بود و حذف شد.",
+                reply_to_message_id=update.message.message_id
+            )
+        except Exception as e:
+            print("خطا در حذف پیام:", e)
+
+dispatcher = Dispatcher(bot, None, workers=0)
+dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, filter_bad_words))
+
 
 translator = Translator()
 user_translation_mode = {}
