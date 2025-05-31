@@ -15,7 +15,7 @@ from googletrans import Translator
 from telegram import Update
 from telegram.ext import Dispatcher, MessageHandler, Filters
 from telegram.ext import CallbackContext
-
+import threading
 
 
 
@@ -54,7 +54,7 @@ def filter_bad_words(update: Update, context: CallbackContext):
         except Exception as e:
             print("خطا در حذف پیام:", e)
 
-dispatcher = Dispatcher(bot, None, workers=0)
+dispatcher = Dispatcher(bot, None, workers=1, use_context=True)
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, filter_bad_words))
 
 
