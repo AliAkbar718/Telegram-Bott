@@ -499,7 +499,7 @@ def handle_all_messages(message):
         if bad_word in text:
             try:
                 bot.delete_message(chat_id, message.message_id)
-                bot.send_message(chat_id, "🚫 پیام نامناسب حذف شد.", reply_to_message_id=message.message_id)
+                bot.send_message(chat_id, "🚫 پیام نامناسب حذف شد")
             except Exception as e:
                 print(f"Error deleting message: {e}")
             return  # بعد از حذف پیام، دیگر پردازش نکن
