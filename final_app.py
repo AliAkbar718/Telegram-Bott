@@ -16,7 +16,7 @@ import re
 
 
 
-TOKEN = '7579645804:AAHt5O6hHdXtdigsQQ-WMGiIm7cJexySTVc'
+TOKEN = '7579645804:AAEGm2Vw3Mh-O_Z5v7l_ASI0lxaoQPegvj8'
 CHANNEL_USERNAME = '@rap_family1' 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
@@ -494,7 +494,8 @@ def handle_all_messages(message):
     'شل ناموس', 'کاصم', 'کاسم', 'کاص', 'کاس', 'کاص مار', 'کونده'
     'تخم سگ', 'تخم حروم', 'ننه جنده', 'ننه کصده', 'ننه کونده', 'زن کصده',
     'زن کاصده','پدر سگ', 'سگ پدر', 'مادر سگ', 'زن جنده', 'زنتو گاییدم', 'زنتو کردم',
-    'http', 'https', 't.me', '.ru', 'vpn', 'instagram', 'youtube', 'onlyfans']
+    'vpn', 'onlyfans', 'instagram', 'https://', 'http://', 'arturshi.ru', 't.me', '.ru'
+    ]
 
     for bad_word in bad_words:
         if bad_word in text:
@@ -684,7 +685,7 @@ def webhook():
    
 @app.route('/')
 def index():
-    return "🤖 Bot is alive!", 200
+    return "ربات فعاله 🤖", 200
 
 
 if __name__ == '__main__':
