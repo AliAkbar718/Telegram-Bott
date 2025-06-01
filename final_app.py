@@ -106,7 +106,7 @@ def unpin(m):
     print("دستور حذف پین اجرا شد:", m.text)
     if is_admin(m.chat.id, m.from_user.id):
         bot.unpin_chat_message(m.chat.id)
-        bot.reply_to(m, "🚫 پین پیام حذف شد")
+        bot.reply_to(m, "پین پیام حذف شد 🚫")
     else:
             bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
   
