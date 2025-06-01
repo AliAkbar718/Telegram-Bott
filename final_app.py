@@ -675,7 +675,7 @@ def handle_left_member(message):
 
 
 
-@app.route('/webhook', methods=['POST'])
+@app.route('/', methods=['POST'])
 def webhook():
     if request.headers.get('content-type') == 'application/json':
         update = telebot.types.Update.de_json(request.get_data().decode('utf-8'))
