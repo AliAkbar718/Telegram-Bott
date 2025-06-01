@@ -544,6 +544,9 @@ def handle_all_messages(message):
         username = message.from_user.username or first_name
         bot.send_message(chat_id, f'جانم @{username}\n\n 🔸 برای اطلاع از قابلیت هام کلمه <b>«لیست»</b> رو تایپ کن' , parse_mode="HTML")
 
+    elif text in ['ریات', 'روبات', 'رباط']:
+        bot.reply_to(message, 'معلم ادبیاتت کی بود؟ زنده میخامش')
+
     elif text in ['سلام خوبی', 'خوبی', 'خوب هستی', 'چطوری']:
         bot.reply_to(message, 'سلام خوبم حال خودت خوبه؟')
         
@@ -571,44 +574,57 @@ def handle_all_messages(message):
     elif text == 'درود':
         bot.reply_to(message, 'درود بر تو گل🌹')
 
-    elif text in ['سلام خاری', 'خاری']:
-        bot.reply_to(message, 'خارمه ته خاری')
 
-    elif text == 'چه خبر':
-        bot.reply_to(message, 'سلامتی ته چه خبر')
+#### Mazani Lang ####
+    elif text in ['سلام خاری', 'خاری', 'ربات خاری']:
+        bot.reply_to(message, 'خارِمه تِه خاری')
 
-    elif text == 'منم سلامتی خبری نیه':
-        bot.reply_to(message, ' آها همیشه سلامت بوشی')
+    elif text in ['چه خبر', 'ربات چه خبر']:
+        bot.reply_to(message, 'سِلامِتی تِه چه خَبِر')
+
+    elif text == 'منم سلامتی خبری نییه':
+        bot.reply_to(message, ' آها همیشه سِلامِت بوشی')
 
     elif text == 'گم بواش':
-        bot.reply_to(message, 'گم نوومبه شه سره راه ره بلدمه')
+        bot.reply_to(message, 'گوم نَوومبه شِه سِرِه راه رِه بَلِدِمه')
 
     elif text == 'گیخار':
-        bot.reply_to(message, 'برو مه گی ره بخار')
+        bot.reply_to(message, 'بِرو مِه گی رِه بَخار')
 
     elif text in ['چیکار کندی', 'چیکار کاندی']:
-        bot.reply_to(message, 'چیکار خاستی هاکانم درمه ته جه گپ زمبه😑')
+        bot.reply_to(message, 'چیکار خاستی هاکانِم دَرمه تِه جِه گَپ زَمبه😑')
 
-    elif text == 'کجه دری':
-        bot.reply_to(message, 'تلگرام دله درمه دیگه اینتا هم بییه سوال🙄')
+    elif text in ['کجه دری', 'کاجه دری']:
+        bot.reply_to(message, 'تِلِگرام دِله دَرمه دیگه اینتا هم بَییه سوال🙄')
 
     elif text in ['ته اسم چیه', 'ته اسم چیچیه']:
-        bot.reply_to(message, 'من علی بات🤖هستمه شما مه ره نشناسنی😁')
+        bot.reply_to(message, 'مِن علی بات🤖هَستِمه شِما مِه رِه نِشناسِنی😁')
 
-    elif text == 'ربات ته ره دوست دارمه':
-        bot.reply_to(message, 'منم ته ره خله دوست دارمه ولی از یه نظر دیگه🙂')
+    elif text in ['ربات ته ره دوست دارمه', 'ربات دوست دارمه']:
+        bot.reply_to(message, 'مِنِم تِه رِه خَله دوست دارمه ولی از یه نَظِر دیگه🙂')
 
-    elif text == 'ربات مه جه رل زندی':
-        bot.reply_to(message, 'اره ته فدابووشم ناز ره بخارم😁')
+    elif text in ['ربات مه جه رل زندی', 'ربات مه جا رل زندی', 'مه جه رل زندی', 'مه جا رل زندی']:
+        bot.reply_to(message, 'اَرِه تِه فِدابَووشِم ناز رِه بَخارِم😁')
 
     elif text == 'من بورم':
-        bot.reply_to(message, 'به سلامت شه هوا ره دار')
+        bot.reply_to(message, 'به سِلامِت شِه هِوا رِه دار')
+    
+    elif text in ['خارمه ته خاری', 'خارمه ته چی', 'شکر ته خار هستی', 'شکر ته خاری']:
+        bot.reply_to(message, 'مِنِم خارِمه خَلِه ممنون🙏')
+    
+    elif text in ['بد نیمه ته خاری', 'بد نیمه ته چی', 'بد نیمه']:
+        bot.reply_to(message, 'خار بَووشی اَره خِدا رِه شُکر')    
         
-    elif text == 'بات':
-      bot.send_message(chat_id, f'جان @{message.from_user.username} مه ره کار داشتی؟\n\n 🔸 برای اطلاع داشتن از مه قابلیت کلمه <b> «لیست» </b> ره راهی هاکان', parse_mode="HTML")
+    elif text == 'بات':  
+        bot.send_message(chat_id, f'جان @{message.from_user.username} مِه رِه کار داشتی؟\n\n 🔸 برای اطلاع داشتِن از مِه قابِلیِت کلِمه <b> «لیست» </b> رِه راهی هاکِن', parse_mode="HTML")
 
-
-
+    elif text in ['ته فدا بووشم', 'فدا بووشم', 'ته دا بووم']:
+        bot.reply_to(message, 'نَووشی بَمونی ارزش دارنی')
+    
+    elif text in ['ربات عشق منی', 'ربات عشقی']:
+        bot.reply_to(message, 'تِه فِدا دوسِت دارمه قلبی☺️🫀')
+      
+        
     # حذف لینک با اخطار
     if contains_link(text):
         if not is_admin(chat_id, user_id):
