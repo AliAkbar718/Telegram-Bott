@@ -106,7 +106,7 @@ def unpin(m):
     print("دستور حذف پین اجرا شد:", m.text)
     if is_admin(m.chat.id, m.from_user.id):
         bot.unpin_chat_message(m.chat.id)
-        bot.reply_to(m, "پین پیام حذف شد 🚫")
+        bot.reply_to(m, "پین پیام حذف شد ☑️")
     else:
             bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
   
@@ -118,7 +118,7 @@ def ban(m):
     if is_admin(m.chat.id, m.from_user.id):
         if m.reply_to_message:
             bot.ban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
-            bot.reply_to(m, f"کاربر {m.reply_to_message.from_user.first_name} بن شد")
+            bot.reply_to(m, f"کاربر <b> {m.reply_to_message.from_user.first_name} </b> بن شد 🚫", parse_mode="HTML")
         else:
             bot.reply_to(m, "روی پیام کاربر ریپلای کن")
 
@@ -129,7 +129,7 @@ def unban(m):
     if is_admin(m.chat.id, m.from_user.id):
         if m.reply_to_message:
             bot.unban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
-            bot.reply_to(m, "کاربر از بن خارج شد")
+            bot.reply_to(m, "کاربر از بن خارج شد ✅")
         else:
             bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
 
@@ -686,7 +686,7 @@ def welcome_new_user(message):
 
 @bot.message_handler(content_types=['left_chat_member'])
 def handle_left_member(message):
-    bot.reply_to(message, "به سلامت👋")
+    bot.reply_to(message, "بودی خوش نبودی فراموش👋")
 
 
 
