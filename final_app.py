@@ -685,8 +685,12 @@ def welcome_new_user(message):
 
 
 @bot.message_handler(content_types=['left_chat_member'])
-def handle_left_member(message):
-    bot.reply_to(message, "بودی خوش نبودی فراموش👋")
+def left_user(message):
+    left_user = message.left_chat_member
+
+    # فقط اگر کاربر خودش ترک کرده باشه
+    if message.from_user.id == left_user.id:
+        bot.reply_to(message, "بودی خوش نبودی فراموش 👋")
 
 
 
