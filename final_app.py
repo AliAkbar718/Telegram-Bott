@@ -643,11 +643,11 @@ def handle_all_messages(message):
 
 weekday_names = {
     'Saturday': 'شنبه',
-    'Sunday': 'یک‌شنبه',
+    'Sunday': 'یکشنبه',
     'Monday': 'دوشنبه',
     'Tuesday': 'سه‌شنبه',
     'Wednesday': 'چهارشنبه',
-    'Thursday': 'پنج‌شنبه',
+    'Thursday': 'پنجشنبه',
     'Friday': 'جمعه'
 }
 
@@ -672,16 +672,24 @@ def welcome_new_user(message):
         iran_time = datetime.now(pytz.timezone('Asia/Tehran'))
         shamsi_time = jdatetime.datetime.fromgregorian(datetime=iran_time)
 
-        weekday_en = shamsi_time.strftime('%A')     # مثلاً Saturday
-        month_en = shamsi_time.strftime('%B')       # مثلاً Farvardin
-
+        weekday_en = shamsi_time.strftime('%A')
+        month_en = shamsi_time.strftime('%B')
+        
         weekday_fa = weekday_names.get(weekday_en, weekday_en)
         month_fa = month_names.get(month_en, month_en)
 
         date_str = f"{shamsi_time.day} {month_fa} {shamsi_time.year}"
         time_str = shamsi_time.strftime('%H:%M:%S')
-        response = f' {weekday_fa} {date_str} \n\nزمان: {time_str}  '
-        bot.send_message(message.chat.id, f'درود به گپمون خوش اومدی✨❤️{message.from_user.first_name}\n\nامروز{response}')
+
+        response = f"{weekday_fa} {date_str}\nزمان: {time_str}"
+        group_name = message.chat.title or "گپ"
+
+        bot.send_message(
+            message.chat.id, parse_mode= "HTML"
+            f"درود بر <b> {new_member.first_name} </b>عزیز 🌟\n"
+            f"به گروه «{group_name}» خوش اومدی ✨❤️\n\n"
+            f"امروز: {response}"
+        )
 
 
 @bot.message_handler(content_types=['left_chat_member'])
