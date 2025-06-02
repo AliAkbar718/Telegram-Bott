@@ -316,7 +316,7 @@ def start(message):
         keyboard.add(
             types.KeyboardButton('مدیریت گروه'),
             types.KeyboardButton('بیوگرافی'),
-            types.KeyboardButton('اصطلاحات انگلیسی'),
+            types.KeyboardButton('اصطلاح انگلیسی'),
             types.KeyboardButton('جرعت حقیقت'),
             types.KeyboardButton('جوک'),
             types.KeyboardButton('زبان هخامنشی'),
@@ -554,7 +554,7 @@ def handle_all_messages(message):
          bot.reply_to(message, random_message, parse_mode="HTML")
          bot.send_message(message.chat.id, 'برای کپی کردن ❐ روی متن بزنید')
 
-    elif text == 'اصطلاحات انگلیسی':
+    elif text == 'اصطلاح انگلیسی':
          essential = [ "<code> After Blood\n\nخونخواهی و انتقام</code>", "<code> A Busy Body\n\nآدم فوضول </code>", "<code> A Proper Meal\n\nیه غذای درست و حسابی  </code> ", "<code> All In Stitches\n\nاز خنده روده بر شدن </code>", "<code>Appearances Are Deceptive\n\nظاهر افراد فریبنده هست </code>", "<code> A Ray of Sunshine\n\nکورسوی امید</code>", "<code> Are You Sulking?\n\nقهری؟ </code>", "<code> Are You Ticklish\n\nقلقلکی هستی؟ </code>", "<code> As They Say\n\nبه قول معروف... </code>", "<code> At The Eleventh Hour\n\nدقیقه نود (لحظه آخر) </code>", " <code> Beet Red\n\nسرخ شدن از خجالت </code>", " <code> Bend Over Backwards\n\nجون کندن </code>", " <code> Being Broke Hurts!\n\nبی پولی بد دردیه </code>", " <code> Better Late Than Never\n\nدیر رسیدن بهتر از هرگز نرسیدنه </code>", " <code> Blow Hot And Cold\n\nهر دفعه یه سازی میزنه </code>", "<code> Blue In The Face\n\nزبونم مو در آورد </code>", "<code> Bust Hump\n\nبرو گمشو </code>",  "<code> Buy The Farm\n\nنخود هر آشی شدن </code>", "<code> Catch Someone Red Handed\n\nمچ کسی رو گرفتن </code>", "<code> Cat Got Your Tongue?\n\nگربه زبونتو خورده؟ </code>" ]
          random_message = random.choice(essential)
          bot.reply_to(message, random_message, parse_mode="HTML")
