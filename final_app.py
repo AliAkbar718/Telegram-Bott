@@ -685,8 +685,8 @@ def welcome_new_user(message):
         group_name = message.chat.title or "گپ"
 
         bot.send_message(
-            message.chat.id, parse_mode= "HTML"
-            f"درود بر <b> {new_member.first_name} </b>عزیز 🌟\n"
+            message.chat.id,
+            f"درود بر {new_member.first_name} عزیز 🌟\n"
             f"به گروه «{group_name}» خوش اومدی ✨❤️\n\n"
             f"امروز: {response}"
         )
