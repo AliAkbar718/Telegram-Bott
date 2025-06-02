@@ -707,7 +707,7 @@ def welcome_new_user(message):
         bot.send_message(
             message.chat.id,
             f"درود بر<b> {new_member.first_name}</b> عزیز 🌟\n\n"
-            f"به گروه<b>«{group_name}»</b>\nخوش اومدی ✨❤️\n\n"
+            f"به گروه<b> «{group_name}»</b>\nخوش اومدی ✨❤️\n\n"
             f"امروز: {response}", parse_mode="HTML"
         )
 
