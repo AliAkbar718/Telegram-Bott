@@ -148,19 +148,17 @@ def add_back_user(m):
                 reply_markup=markup, parse_mode="HTML")
             bot.reply_to(m, "✅ لینک به پیوی کاربر ارسال شد.")
         except:
-            start_link = f"https://t.me/{bot.get_me().alia81bot}?start=start",
-            bot.reply_to(m, f"""❗️ کاربر هنوز ربات را استارت نکرده یا پیام‌های خصوصی‌اش بسته‌ست\n\n
-1. این لینک را برای کاربر ارسال کن:
+            # اگر ربات بلاک شده باشه یا استارت نشده باشه
+            start_link = f"https://t.me/{bot.get_me().username}?start=start"
+            bot.reply_to(m,  f"""❗ کاربر هنوز ربات را استارت نکرده یا پیام‌های خصوصیش بسته هست\n\n1. این لینک را برای کاربر ارسال کن:
 ➡️ {start_link}
-
+               
 2. به او بگو پیام بده یا بنویسه /start
 
 3. بعدش دوباره پیامش رو ریپلای کن و بنویس: افزودن ✅""")
     except Exception as e:
-        bot.reply_to(m, f"⛔ خطا در افزودن کاربر:\n{e}")
-        
-    if not is_admin(m.chat.id, m.from_user.id):
-        return bot.reply_to(m, "فقط ادمین‌ها می‌تونن از این قابلیت استفاده کنن")
+        bot.reply_to(m, f"❌ خطا در عملیات:\n{e}")
+   
 
 
 # سکوت
