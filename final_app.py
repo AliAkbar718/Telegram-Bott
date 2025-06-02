@@ -599,8 +599,13 @@ def handle_all_messages(message):
 
     elif text == 'درود':
         bot.reply_to(message, 'درود بر تو گل🌹')
+        
+    elif text in ['فدات خوبی', 'فدات تو خوبی']:
+        bot.reply_to(message, 'قربونت برم خوبم شکر')     
 
-
+    elif text in ['شکر خوبم', 'خوبم شکر']:
+        bot.reply_to(message, 'خداروشکر همیشه خوب باشی')
+    
 #### Mazani Lang ####
     elif text in ['سلام خاری', 'خاری', 'ربات خاری']:
         bot.reply_to(message, 'خارِمه تِه خاری')
