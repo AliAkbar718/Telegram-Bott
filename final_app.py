@@ -681,13 +681,13 @@ def welcome_new_user(message):
         date_str = f"{shamsi_time.day} {month_fa} {shamsi_time.year}"
         time_str = shamsi_time.strftime('%H:%M:%S')
 
-        response = f"{weekday_fa} {date_str}\nزمان: {time_str}"
+        response = f"{weekday_fa} {date_str}\n\nزمان: {time_str}"
         group_name = message.chat.title or "گپ"
 
         bot.send_message(
             message.chat.id,
-            f"درود بر {new_member.first_name} عزیز 🌟\n"
-            f"به گروه «{group_name}» خوش اومدی ✨❤️\n\n"
+            f"درود بر {new_member.first_name} عزیز 🌟\n\n"
+            f"به گروه «{group_name}»\n خوش اومدی ✨❤️\n\n"
             f"امروز: {response}"
         )
 
