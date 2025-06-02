@@ -122,16 +122,36 @@ def ban(m):
         else:
             bot.reply_to(m, "روی پیام کاربر ریپلای کن")
 
-# حذف بن
-@bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('حذف بن'))
-def unban(m):
-    print("دستور حذف بن اجرا شد:", m.text)
-    if is_admin(m.chat.id, m.from_user.id):
-        if m.reply_to_message:
-            bot.unban_chat_member(m.chat.id, m.reply_to_message.from_user.id)
-            bot.reply_to(m, "کاربر از بن خارج شد ✅")
-        else:
-            bot.reply_to(m, "لطفاً روی پیام ریپلای کن.")
+
+#### حذف بن و افزودن کاربر به گروه ####
+@bot.message_handler(func=lambda m: m.reply_to_message and m.text.lower() == 'افزودن')
+def add_back_user(m):
+    user_id = m.reply_to_message.from_user.id
+    chat_id = m.chat.id
+
+    try:
+        # حذف بن کاربر
+        bot.unban_chat_member(chat_id, user_id)
+
+        # ساخت لینک دعوت فقط برای یک بار
+        invite_link = bot.create_chat_invite_link(chat_id, member_limit=1)
+
+        # ساخت دکمه
+        markup = types.InlineKeyboardMarkup()
+        button = types.InlineKeyboardButton("📥 ورود به گروه", url=invite_link.invite_link)
+        markup.add(button)
+
+        # تلاش برای ارسال پیوی به کاربر بن‌شده
+        try:
+            bot.send_message(user_id,
+                f"سلام ✨\nدر گروه «{m.chat.title}» از حالت بن خارج شدی\n\nبرای ورود دوباره، روی دکمه زیر کلیک کن 👇",
+                reply_markup=markup)
+            bot.reply_to(m, "✅ لینک به پیوی کاربر ارسال شد.")
+        except:
+            bot.reply_to(m, "❗️ کاربر هنوز ربات را استارت نکرده یا پیام‌های خصوصی‌اش بسته‌ست")
+    except Exception as e:
+        bot.reply_to(m, f"⛔ خطا در افزودن کاربر:\n{e}")
+
 
 # سکوت
 @bot.message_handler(func=lambda m: m.text.strip() == 'سکوت')
@@ -686,8 +706,8 @@ def welcome_new_user(message):
 
         bot.send_message(
             message.chat.id,
-            f"درود بر<b>{new_member.first_name}</b>عزیز 🌟\n\n"
-            f"به گروه <b>«{group_name}»</b>\nخوش اومدی ✨❤️\n\n"
+            f"درود بر<b> {new_member.first_name}</b> عزیز 🌟\n\n"
+            f"به گروه <b> «{group_name}»</b>\nخوش اومدی ✨❤️\n\n"
             f"امروز: {response}", parse_mode="HTML"
         )
 
