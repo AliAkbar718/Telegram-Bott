@@ -606,6 +606,9 @@ def handle_all_messages(message):
     elif text in ['شکر خوبم', 'خوبم شکر']:
         bot.reply_to(message, 'خداروشکر همیشه خوب باشی')
     
+    elif text in ['خوبم فدات', 'فدات خوبم']:
+        bot.reply_to(message, 'نشی شکر که خوبی😊')
+    
 #### Mazani Lang ####
     elif text in ['سلام خاری', 'خاری', 'ربات خاری']:
         bot.reply_to(message, 'خارِمه تِه خاری')
