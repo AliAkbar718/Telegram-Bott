@@ -613,7 +613,7 @@ def handle_all_messages(message):
     elif text in ['سلام خاری', 'خاری', 'ربات خاری']:
         bot.reply_to(message, 'خارِمه تِه خاری')
 
-    elif text in ['چه خبر', 'ربات چه خبر']:
+    elif text in ['چه خبر', 'ربات چه خبر', 'شکر چه خبر']:
         bot.reply_to(message, 'سِلامِتی تِه چه خَبِر')
 
     elif text == 'منم سلامتی خبری نییه':
@@ -655,6 +655,12 @@ def handle_all_messages(message):
     elif text in ['ته فدا بووشم', 'فدا بووشم', 'ته دا بووم']:
         bot.reply_to(message, 'نَووشی بَمونی ارزش دارنی')
     
+    elif text in ['شکر خارمه', 'خارمه شکر']:
+        bot.reply_to(message, 'شکر همیشه خار بوشی') 
+    
+    elif text in ['فدات خارمه','قربونت خارمه', 'فدا خارمه']:
+        bot.reply_to(message, 'خارِه خوشحال بَییمه که خار هستی')
+   
     elif text in ['ربات عشق منی', 'ربات عشقی']:
         bot.reply_to(message, 'تِه فِدا دوسِت دارمه قلبی☺️🫀')
       
