@@ -42,7 +42,7 @@ def convert_to_cuneiform(text):
     return ''.join(farsi_to_cuneiform.get(ch, ch) for ch in text)
 
 # شروع
-@bot.message_handler(func= lambda m: m.text == 'زبان هخامنشی')
+@bot.message_handler(func= lambda m: m.text == 'زبان هخامنشی𐎠')
 def hakhmaneshi(message):
     bot.send_message(message.chat.id, "یک متن فارسی بفرست تا برات به خط میخی هخامنشی تبدیل کنم")
     bot.register_next_step_handler(message, handle_text)
@@ -59,7 +59,7 @@ def is_english(text):
         return all(ord(c) < 128 for c in text)
 
 # فعال‌سازی حالت ترجمه برای کاربر
-@bot.message_handler(func=lambda m: m.text == 'ترجمه متن')
+@bot.message_handler(func=lambda m: m.text == 'ترجمه متن🔁')
 def activate_translation_mode(message):
     user_id = message.from_user.id
     user_translation_mode[user_id] = True
