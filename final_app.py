@@ -615,6 +615,9 @@ def handle_all_messages(message):
     elif text in ['سلام خاری', 'خاری', 'ربات خاری']:
         bot.reply_to(message, 'خارِمه تِه خاری')
 
+    elif text in ['ممنون ته خاری', 'مرسی ته خاری', 'اره ته خاری']:
+        bot.reply_to(message, 'اَرِه خار هَستِمِه')
+    
     elif text in ['چه خبر', 'ربات چه خبر', 'شکر چه خبر']:
         bot.reply_to(message, 'سِلامِتی تِه چه خَبِر')
 
