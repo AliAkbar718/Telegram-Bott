@@ -39,7 +39,8 @@ farsi_to_cuneiform = {
  
  # تابع تبدیل
 def convert_to_cuneiform(text):
-    return ''.join(farsi_to_cuneiform.get(ch, ch) for ch in text)
+    converted = ''.join(farsi_to_cuneiform.get(ch, ch) for ch in text)
+    return '\u200F' + converted[::-1]  # ← برعکس کردن + راست‌چین کردن
 
 # شروع
 @bot.message_handler(func= lambda m: m.text == 'زبان هخامنشی𐎠')
