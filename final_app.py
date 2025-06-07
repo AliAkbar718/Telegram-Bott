@@ -50,9 +50,8 @@ def hakhmaneshi(message):
 def handle_text(message):
     original = message.text
     converted = convert_to_cuneiform(original)
-    rtl_cuneiform = '\u200F' + converted
-
-    bot.reply_to(message, f"متن میخی:\n{rtl_cuneiform}")  
+    reversed_text = converted[::-1]
+    bot.reply_to(message, f"متن میخی:\n{reversed_text}")
     bot.send_message(message.chat.id, 'برای اینکه متن جدیدی را وارد کنید\n\nمجددا کلمه <b>زبان هخامنشی</b> را ارسال کنید ', parse_mode="HTML")
  
 
@@ -507,8 +506,9 @@ def handle_all_messages(message):
     user_id = message.from_user.id
     text = message.text.lower().strip()
     first_name = message.from_user.first_name
-
-    # جلوگيری از درگیری با دستورات مدیریتی
+   
+         
+    
     if text in ['پین', 'حذف پین', 'بن', 'حذف بن', 'سکوت', 'حذف سکوت', 'افزودن ادمین', 'حذف ادمین', 'سکوت ', 'لیست', 'افزودن']:
         return
 
@@ -570,7 +570,7 @@ def handle_all_messages(message):
     elif text == 'ربات':
         username = message.from_user.username or first_name
         bot.send_message(chat_id, f'جانم @{username}\n\n 🔸 برای اطلاع از قابلیت هام کلمه <b>«لیست»</b> رو تایپ کن' , parse_mode="HTML")
-
+        
     elif text in ['ریات', 'روبات', 'رباط']:
         bot.reply_to(message, 'معلم ادبیاتت کی بود🤔 زنده میخامش')
 
