@@ -508,14 +508,14 @@ def handle_all_messages(message):
     user_id = message.from_user.id
     text = message.text.lower().strip()
     first_name = message.from_user.first_name
+    username = message.from_user.username or first_name
+
     
     if text in ['ربات']:
-        username = message.from_user.username or first_name
-        bot.reply_to(message, f'جانم @{username}\n\n 🔸 برای اطلاع از قابلیت هام کلمه <b>«لیست»</b> رو تایپ کن', parse_mode="HTML")
+        bot.reply_to(message, f'جانم @{username}\n\n🔸 برای اطلاع از قابلیت هام کلمه <b>«لیست»</b> رو تایپ کن', parse_mode="HTML")
         return  
     
     if text in ['بات']:
-        username = message.from_user.username or first_name
         bot.reply_to(message, f'جان @{username} مِه رِه کار داشتی؟\n\n 🔸 برای اطلاع داشتِن از مِه قابِلیِت کلِمه <b> «لیست» </b> رِه راهی هاکِن', parse_mode="HTML")
         return  
    
@@ -676,48 +676,51 @@ def handle_all_messages(message):
             break
    
  
-    if "http://" in text or "https://" in text or "t.me/" in text or "@" in text:
-        
+    if "http://" in text or "https://" in text or "t.me/" in text:
+    
+    
+    # در پیوی → فقط حذف پیام
         if message.chat.type == 'private':
             try:
                 bot.delete_message(chat_id, message.message_id)
             except:
-             pass
-             return
+                pass
+            return
 
-    # اگر در گروه یا سوپرگروه بود
+    # در گروه‌ها
+    is_admin = False
     if message.chat.type in ['group', 'supergroup']:
         try:
-            # دریافت لیست ادمین‌ها
             admins = bot.get_chat_administrators(chat_id)
-            user_admin_obj = next((admin for admin in admins if admin.user.id == user_id), None)
-
-            if user_admin_obj and user_admin_obj.status in ['administrator', 'creator']:
-                # اگر ادمین یا سازنده بود → کاری نکن
-                return
-
+            for admin in admins:
+                if admin.user.id == user_id and admin.status in ['administrator', 'creator']:
+                    is_admin = True
+                    break
         except Exception as e:
             print(f"خطا در بررسی ادمین بودن: {e}")
-            return  # اگر بررسی شکست خورد، ادامه نده
 
-        # اگر کاربر ادمین نبود → حذف پیام و اخطار
-        try:
-            bot.delete_message(chat_id, message.message_id)
-        except:
-            pass
+        # اگر ادمین نبود → اخطار و حذف
+        if not is_admin:
+            try:
+                bot.delete_message(chat_id, message.message_id)
+            except:
+                pass
 
-        # اخطارها
-        if user_id not in user_warnings:
-            user_warnings[user_id] = 1
-            bot.send_message(chat_id, f"⚠️ کاربر @{username}\n(ارسال لینک 1 از 2)\n\nلینک ممنوع هست 🚫")
+            # اخطارها و اخراج
+            if user_id not in user_warnings:
+                user_warnings[user_id] = 1
+                bot.send_message(chat_id, f"⚠️ کاربر @{username}\n(ارسال لینک 1 از 2)\n\nلینک ممنوع هست 🚫")
+            else:
+                user_warnings[user_id] += 1
+                if user_warnings[user_id] >= 2:
+                    bot.send_message(chat_id, f"⛔️ کاربر @{username}\n(ارسال لینک 2 از 2)\n\nاز گروه حذف شد 🚮")
+                    try:
+                        bot.ban_chat_member(chat_id, user_id)
+                    except:
+                        pass
         else:
-            user_warnings[user_id] += 1
-            if user_warnings[user_id] >= 2:
-                bot.send_message(chat_id, f"⛔️ کاربر @{username}\n(ارسال لینک 2 از 2)\n\nاز گروه حذف شد 🚮")
-                try:
-                    bot.ban_chat_member(chat_id, user_id)
-                except:
-                    pass
+            # اگر ادمین بود → کاری نکن
+            pass
 
    
     
