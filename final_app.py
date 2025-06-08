@@ -675,41 +675,51 @@ def handle_all_messages(message):
             bot.send_message(chat_id, "🚫 پیام نامناسب حذف شد")
             break
    
-
-   
-    if "http://" in text or "https://" in text or "t.me/" in text:
-        chat_id = message.chat.id
-        user_id = message.from_user.id
-        username = message.from_user.username or "کاربر"
-
-        # اگر در پیوی بود → فقط حذف پیام
+ 
+    if "http://" in text or "https://" in text or "t.me/" in text or "@" in text:
+        
         if message.chat.type == 'private':
             try:
                 bot.delete_message(chat_id, message.message_id)
             except:
-                pass
-            return
+             pass
+             return
 
-        # اگر در گروه بود
-        if message.chat.type in ['group', 'supergroup']:
-            try:
-                # بررسی ادمین بودن کاربر
-                admins = bot.get_chat_administrators(chat_id)
-                is_admin = any(admin.user.id == user_id for admin in admins)
-            except:
-                
-                if is_admin:
-                    # اگر ادمین بود → هیچ اخطاری نده، فقط (در صورت نیاز) پیام رو حذف کن
-                    try:
-                        bot.delete_message(chat_id, message.message_id)
-                    except:
-                        bot.delete_message(chat_id, message.message_id)
-                        user_warnings[user_id] = user_warnings.get(user_id, 0) + 1
-                        if user_warnings[user_id] == 1:
-                         bot.send_message(chat_id, f"⚠️ کاربر @{message.from_user.username}\n (ارسال لینک 1 از 2)\n\nلینک ممنوع هست🚫 ")
-                        elif user_warnings[user_id] >= 2:
-                            bot.send_message(chat_id, f"⛔️ کاربر @{message.from_user.username}\n (ارسال لینک 2 از 2)\n\nاز گروه حذف شد🚮")
-                            bot.ban_chat_member(chat_id, user_id)
+    # اگر در گروه یا سوپرگروه بود
+    if message.chat.type in ['group', 'supergroup']:
+        try:
+            # دریافت لیست ادمین‌ها
+            admins = bot.get_chat_administrators(chat_id)
+            user_admin_obj = next((admin for admin in admins if admin.user.id == user_id), None)
+
+            if user_admin_obj and user_admin_obj.status in ['administrator', 'creator']:
+                # اگر ادمین یا سازنده بود → کاری نکن
+                return
+
+        except Exception as e:
+            print(f"خطا در بررسی ادمین بودن: {e}")
+            return  # اگر بررسی شکست خورد، ادامه نده
+
+        # اگر کاربر ادمین نبود → حذف پیام و اخطار
+        try:
+            bot.delete_message(chat_id, message.message_id)
+        except:
+            pass
+
+        # اخطارها
+        if user_id not in user_warnings:
+            user_warnings[user_id] = 1
+            bot.send_message(chat_id, f"⚠️ کاربر @{username}\n(ارسال لینک 1 از 2)\n\nلینک ممنوع هست 🚫")
+        else:
+            user_warnings[user_id] += 1
+            if user_warnings[user_id] >= 2:
+                bot.send_message(chat_id, f"⛔️ کاربر @{username}\n(ارسال لینک 2 از 2)\n\nاز گروه حذف شد 🚮")
+                try:
+                    bot.ban_chat_member(chat_id, user_id)
+                except:
+                    pass
+
+   
     
     
     
