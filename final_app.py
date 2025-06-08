@@ -523,6 +523,10 @@ def handle_all_messages(message):
             bot.reply_to(message, 'معلم ادبیاتت کی بود🤔\n زنده میخوامش')
             return
         
+    if text == 'سلام':
+            bot.reply_to(message, 'سلام خوبی عزیزم') 
+            return     
+        
     if message.chat.type == 'private' or (
         message.reply_to_message and message.reply_to_message.from_user.id == bot.get_me().id
 ):  
@@ -564,8 +568,7 @@ def handle_all_messages(message):
         elif text in ['سلام خوبی', 'خوبی', 'خوب هستی', 'چطوری']:
             bot.reply_to(message, 'سلام خوبم حال خودت خوبه؟')
             
-        elif text == 'سلام':
-            bot.reply_to(message, 'سلام خوبی عزیزم')    
+       
 
         elif text == 'چه خبرا':
             bot.reply_to(message, 'خبر سلامتیت، خودت چه خبر؟')
