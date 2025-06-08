@@ -296,16 +296,13 @@ def is_admin(chat_id, user_id):
     except:
         return False
 
-
-# -------------------- /start --------------------
-
 def is_user_members(channel, user_id):
     try:
         member = bot.get_chat_member(channel, user_id)
         return member.status in ['member', 'administrator', 'creator']
     except:
         return False
-
+# -------------------- /start --------------------
 
 # هندلر /start
 @bot.message_handler(commands=['start'])
@@ -329,25 +326,26 @@ def start(message):
         )
 
 
-
         if is_user_members(Channel_1, user_id) and is_user_members(Channel_2, user_id):
-                bot.send_message(
-                chat_id,
-                "سلام من علی بات 🤖 هستم\n\nاز منوی زیر در صفحه کلید یکی از قابلیت‌ها رو انتخاب کن👇",
-                reply_markup=keyboard
+            bot.send_message(
+            chat_id,
+            "سلام من علی بات 🤖 هستم\n\nاز منوی زیر در صفحه کلید یکی از قابلیت‌ها رو انتخاب کن👇",
+            reply_markup=keyboard
     )
         else:
             join_btn = types.InlineKeyboardMarkup()
             join_btn.add(
-                types.InlineKeyboardButton("عضویت در کانال اول 📢", url="https://t.me/rap_family1"),
-                types.InlineKeyboardButton("عضویت در کانال دوم 📢", url="https://t.me/alibotteleg")
-            )
+            types.InlineKeyboardButton("عضویت در کانال اول 📢", url="https://t.me/rap_family1"),
+            types.InlineKeyboardButton("عضویت در کانال دوم 📢", url="https://t.me/alibotteleg")
+    )
             bot.send_message(
-                chat_id,
-                "توی هر دو کانال عضو نیستی ❌\n\nبرای استفاده از ربات، باید توی هر دو کانال زیر عضو بشی 👇",
-                reply_markup=join_btn
-            )
-            bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن")
+            chat_id,
+            "توی هر دو کانال عضو نیستی ❌\n\nبرای استفاده از ربات، باید توی هر دو کانال زیر عضو بشی 👇",
+            reply_markup=join_btn
+    )
+            bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن.")
+
+     
 
 
 @bot.message_handler(commands=['Group'])
