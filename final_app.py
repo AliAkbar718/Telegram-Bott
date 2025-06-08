@@ -310,8 +310,7 @@ def start(message):
     user_id = message.from_user.id
     chat_id = message.chat.id
 
-    if is_user_members(user_id):
-        # ساخت Reply Keyboard
+    if is_user_members(Channel_1, user_id) and is_user_members(Channel_2, user_id):
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         keyboard.add(
             types.KeyboardButton('مدیریت گروه🤵‍♂️'),
@@ -324,27 +323,24 @@ def start(message):
             types.KeyboardButton('ارتباط با ما📞'),
             types.KeyboardButton('ترجمه متن🔁')
         )
-
-
-        if is_user_members(Channel_1, user_id) and is_user_members(Channel_2, user_id):
-            bot.send_message(
+        bot.send_message(
             chat_id,
             "سلام من علی بات 🤖 هستم\n\nاز منوی زیر در صفحه کلید یکی از قابلیت‌ها رو انتخاب کن👇",
             reply_markup=keyboard
-    )
-        else:
-            join_btn = types.InlineKeyboardMarkup()
-            join_btn.add(
+        )
+    else:
+        # اگر عضو نبود → ساخت دکمه‌های عضویت
+        join_btn = types.InlineKeyboardMarkup()
+        join_btn.add(
             types.InlineKeyboardButton("عضویت در کانال اول 📢", url="https://t.me/rap_family1"),
             types.InlineKeyboardButton("عضویت در کانال دوم 📢", url="https://t.me/alibotteleg")
-    )
-            bot.send_message(
+        )
+        bot.send_message(
             chat_id,
             "توی هر دو کانال عضو نیستی ❌\n\nبرای استفاده از ربات، باید توی هر دو کانال زیر عضو بشی 👇",
             reply_markup=join_btn
-    )
-            bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن.")
-
+        )
+        bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن.")
      
 
 
