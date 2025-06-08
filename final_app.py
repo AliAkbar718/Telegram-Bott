@@ -511,19 +511,20 @@ def handle_all_messages(message):
     
     if text in ['ربات']:
         username = message.from_user.username or first_name
-        bot.send_message(chat_id, f'جانم @{username}\n\n 🔸 برای اطلاع از قابلیت هام کلمه <b>«لیست»</b> رو تایپ کن', parse_mode="HTML")
+        bot.reply_to(message, f'جانم @{username}\n\n 🔸 برای اطلاع از قابلیت هام کلمه <b>«لیست»</b> رو تایپ کن', parse_mode="HTML")
         return  
+    
     if text in ['بات']:
         username = message.from_user.username or first_name
-        bot.send_message(chat_id, f'جان @{username} مِه رِه کار داشتی؟\n\n 🔸 برای اطلاع داشتِن از مِه قابِلیِت کلِمه <b> «لیست» </b> رِه راهی هاکِن', parse_mode="HTML")
+        bot.reply_to(message, f'جان @{username} مِه رِه کار داشتی؟\n\n 🔸 برای اطلاع داشتِن از مِه قابِلیِت کلِمه <b> «لیست» </b> رِه راهی هاکِن', parse_mode="HTML")
         return  
    
     if text in ['ریات', 'روبات', 'رباط']:
-            bot.reply_to(message, 'معلم ادبیاتت کی بود🤔 زنده میخامش')
+            bot.reply_to(message, 'معلم ادبیاتت کی بود🤔\n زنده میخامش')
             return
         
     if message.chat.type == 'private' or (
-    message.reply_to_message and message.reply_to_message.from_user.id == bot.get_me().id
+        message.reply_to_message and message.reply_to_message.from_user.id == bot.get_me().id
 ):  
         if text == 'مدیریت گروه🤵‍♂️':
             bot.reply_to(message, 'برای استفاده از امکانات مدیریتی،\n\n ابتدا ربات را به گروه خود اضافه و سپس ادمین کامل کنید ')
