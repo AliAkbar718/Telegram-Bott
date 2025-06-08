@@ -53,7 +53,7 @@ def handle_text(message):
     original = message.text
     converted = convert_to_cuneiform(original)
     reversed_text = converted[::-1]
-    bot.reply_to(message, f"متن میخی:\n\n<code>{reversed_text}</code>", parse_mode="HTML")
+    bot.reply_to(message, f"متن میخی:\n\n{reversed_text}")
     bot.send_message(message.chat.id, 'برای اینکه متن جدیدی را وارد کنید\n\nمجددا کلمه «زبان هخامنشی» را ارسال کنید ')
  
 
