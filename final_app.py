@@ -299,14 +299,13 @@ def is_admin(chat_id, user_id):
 
 # -------------------- /start --------------------
 
-# تابع بررسی عضویت در کانال
-def is_user_members(user_id):
+def is_user_members(channel, user_id):
     try:
-        member = bot.get_chat_member('@rap_family1', '@alibotteleg', user_id)  
+        member = bot.get_chat_member(channel, user_id)
         return member.status in ['member', 'administrator', 'creator']
     except:
         return False
-    
+
 
 # هندلر /start
 @bot.message_handler(commands=['start'])
