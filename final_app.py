@@ -516,7 +516,7 @@ def handle_all_messages(message):
         return  
    
     if text in ['ریات', 'روبات', 'رباط']:
-            bot.reply_to(message, 'معلم ادبیاتت کی بود🤔\n زنده میخامش')
+            bot.reply_to(message, 'معلم ادبیاتت کی بود🤔\n زنده میخوامش')
             return
         
     if message.chat.type == 'private' or (
