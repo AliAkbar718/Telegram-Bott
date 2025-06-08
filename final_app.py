@@ -302,7 +302,7 @@ def is_admin(chat_id, user_id):
 # تابع بررسی عضویت در کانال
 def is_user_members(user_id):
     try:
-        member = bot.get_chat_member('@rap_family1', user_id)  
+        member = bot.get_chat_member('@rap_family1', '@alibotteleg', user_id)  
         return member.status in ['member', 'administrator', 'creator']
     except:
         return False
