@@ -676,7 +676,7 @@ def handle_all_messages(message):
             break
    
  
-    if "http://" in text or "https://" in text or "t.me/" in text:
+    if "http://" in text or "https://" in text or "t.me/" in text or "@" in text:
     
     
     # در پیوی → فقط حذف پیام
@@ -763,24 +763,26 @@ def welcome_new_user(message):
     for new_member in message.new_chat_members:
         iran_time = datetime.now(pytz.timezone('Asia/Tehran'))
         shamsi_time = jdatetime.datetime.fromgregorian(datetime=iran_time)
-
         weekday_en = shamsi_time.strftime('%A')
         month_en = shamsi_time.strftime('%B')
-        
+
         weekday_fa = weekday_names.get(weekday_en, weekday_en)
         month_fa = month_names.get(month_en, month_en)
-
         date_str = f"{shamsi_time.day} {month_fa} {shamsi_time.year}"
         time_str = shamsi_time.strftime('%H:%M:%S')
-
         response = f"{weekday_fa} {date_str}\n\nزمان: {time_str}"
+
         group_name = message.chat.title or "گپ"
+
+        # بررسی نام → اگر نبود، از username استفاده کن
+        display_name = new_member.first_name if new_member.first_name else f"@{new_member.username or 'کاربر'}"
 
         bot.send_message(
             message.chat.id,
-            f"درود بر<b> {new_member.first_name} or {new_member.username}</b> عزیز 🌟\n\n"
+            f"درود بر<b> {display_name}</b> عزیز 🌟\n\n"
             f"به گروه<b> «{group_name}»</b>\nخوش اومدی ✨❤️\n\n"
-            f"امروز: {response}", parse_mode="HTML"
+            f"امروز: {response}",
+            parse_mode="HTML"
         )
 
 
