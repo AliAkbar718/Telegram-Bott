@@ -508,15 +508,24 @@ def handle_all_messages(message):
     user_id = message.from_user.id
     text = message.text.lower().strip()
     first_name = message.from_user.first_name
+    
+    if text in ['ربات']:
+        username = message.from_user.username or first_name
+        bot.send_message(chat_id, f'جانم @{username}\n\n 🔸 برای اطلاع از قابلیت هام کلمه <b>«لیست»</b> رو تایپ کن', parse_mode="HTML")
+        return  
+    if text in ['بات']:
+        username = message.from_user.username or first_name
+        bot.send_message(chat_id, f'جان @{username} مِه رِه کار داشتی؟\n\n 🔸 برای اطلاع داشتِن از مِه قابِلیِت کلِمه <b> «لیست» </b> رِه راهی هاکِن', parse_mode="HTML")
+        return  
    
+    if text in ['ریات', 'روبات', 'رباط']:
+            bot.reply_to(message, 'معلم ادبیاتت کی بود🤔 زنده میخامش')
+            return
+        
     if message.chat.type == 'private' or (
     message.reply_to_message and message.reply_to_message.from_user.id == bot.get_me().id
-):
-        if text == 'ربات':  
-            username = message.from_user.username or message.from_user.first_name
-            bot.send_message(message.chat.id, f'جانم @{username}\n\n 🔸 برای اطلاع از قابلیت هام کلمه <b>«لیست»</b> رو تایپ کن', parse_mode="HTML")
-            
-        elif text == 'مدیریت گروه🤵‍♂️':
+):  
+        if text == 'مدیریت گروه🤵‍♂️':
             bot.reply_to(message, 'برای استفاده از امکانات مدیریتی،\n\n ابتدا ربات را به گروه خود اضافه و سپس ادمین کامل کنید ')
 
         elif text == 'ارتباط با ما📞':
@@ -550,13 +559,7 @@ def handle_all_messages(message):
             random_message = random.choice(messages)
             bot.reply_to(message, random_message)
 
-        elif text == 'ربات':
-            username = message.from_user.username or first_name
-            bot.send_message(chat_id, f'جانم @{username}\n\n 🔸 برای اطلاع از قابلیت هام کلمه <b>«لیست»</b> رو تایپ کن' , parse_mode="HTML")
-            
-        elif text in ['ریات', 'روبات', 'رباط']:
-            bot.reply_to(message, 'معلم ادبیاتت کی بود🤔 زنده میخامش')
-
+       
         elif text in ['سلام خوبی', 'خوبی', 'خوب هستی', 'چطوری']:
             bot.reply_to(message, 'سلام خوبم حال خودت خوبه؟')
             
@@ -635,9 +638,6 @@ def handle_all_messages(message):
         
         elif text in ['بد نیمه ته خاری', 'بد نیمه ته چی', 'بد نیمه']:
             bot.reply_to(message, 'خار بَووشی اَره خِدا رِه شُکر')    
-            
-        elif text == 'بات':  
-            bot.send_message(chat_id, f'جان @{message.from_user.username} مِه رِه کار داشتی؟\n\n 🔸 برای اطلاع داشتِن از مِه قابِلیِت کلِمه <b> «لیست» </b> رِه راهی هاکِن', parse_mode="HTML")
 
         elif text in ['ته فدا بووشم', 'فدا بووشم', 'ته دا بووم']:
             bot.reply_to(message, 'نَووشی بَمونی ارزش دارنی')
@@ -740,7 +740,7 @@ def welcome_new_user(message):
 
         bot.send_message(
             message.chat.id,
-            f"درود بر<b> {new_member.first_name}</b> عزیز 🌟\n\n"
+            f"درود بر<b> {new_member.first_name} or {new_member.username}</b> عزیز 🌟\n\n"
             f"به گروه<b> «{group_name}»</b>\nخوش اومدی ✨❤️\n\n"
             f"امروز: {response}", parse_mode="HTML"
         )
