@@ -22,7 +22,7 @@ Channel_2 = "@alibotteleg"
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
-
+esdss
 translator = Translator()
 user_translation_mode = {}
 
