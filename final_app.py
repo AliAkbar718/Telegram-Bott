@@ -16,7 +16,7 @@ import re
 
 
 
-TOKEN = '7579645804:AAEGm2Vw3Mh-O_Z5v7l_ASI0lxaoQPegvj8'
+TOKEN = '7579645804:AAF5V1dumlyrbyHj0RQkOZO402la4csirAI'
 Channel_1 = '@rap_family1' 
 Channel_2 = "@alibotteleg"
 bot = telebot.TeleBot(TOKEN)
