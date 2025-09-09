@@ -24,34 +24,9 @@ app = Flask(__name__)
 
 
 user_warnings = {}  # دیکشنری برای نگه‌داری اخطار کاربران
-user_states = {}
-STATE_WAITING_TEXT = "waiting_for_text"
-
-@bot.message_handler(func=lambda m: m.text and "ترجمه متن🔁"in m.text)
-def ask_for_text(message):
-    user_states[message.chat.id] = STATE_WAITING_TEXT
-    bot.send_message(message.chat.id, "لطفاً متنی که می‌خوای ترجمه کنم رو بفرست ✍️")
-
-# گرفتن متن و ترجمه
-@bot.message_handler(func=lambda m: True)
-def handle_messages(message):
-    chat_id = message.chat.id
-    state = user_states.get(chat_id)
-
-    if state == STATE_WAITING_TEXT:
-        try:
-            translated = GoogleTranslator(source='auto', target='fa').translate(message.text)
-            bot.send_message(chat_id, f"✅ ترجمه:\n\n{translated}")
-        except Exception as e:
-            bot.send_message(chat_id, f"❌ خطا در ترجمه: {e}")
-        finally:
-            user_states[chat_id] = None  # خروج از حالت
-    else:
-        bot.send_message(chat_id, "برای ترجمه بنویس: «ترجمه متن»")
 
 
 
- 
 farsi_to_cuneiform = {
     'ا': '𐎠', 'آ': '𐎠', 'ب': '𐎲', 'پ': '𐎱', 'ت': '𐎫', 'ث': '𐎰', 'تو': '𐎬', 'طو': '𐎬', 'ج': '𐎢', 'جی': '𐎪', 'چ': '𐎨', 'ح': '𐏃', 'خ': '𐎧',
     'د': '𐎭', 'دی': '𐎮', 'دو': '𐎯', 'ذ': '𐏀', 'ر': '𐎼', 'رو': '𐎽', 'ز': '𐏀', 'س': '𐎿', 'ش': '𐎤', 'ص': '𐎿', 'ض': '𐏀', 'ط': '𐎫', 'ظ': '𐏀', 'ع': '𐎠', 'غ': '𐎥', 'ک': '𐎣',
@@ -78,8 +53,6 @@ def handle_text(message):
     bot.reply_to(message, f"متن میخی:\n\n<code>{reversed_text}</code>", parse_mode="HTML")
     bot.send_message(message.chat.id, 'برای اینکه متن جدیدی را وارد کنید\n\nمجددا کلمه «زبان هخامنشی» را ارسال کنید ')
  
-
-############### translate text #################
 
 
 
@@ -269,7 +242,6 @@ def show_command_list(message):
         "𐎠 /Ancient  ←زبان هخامنشی\n\n"
         "⁉️ /Facts  ←دانستنی\n\n"
         "📞 /Contact  ←ارتباط با ما\n\n"
-        "🔁 /Translate  ←ترجمه متن\n\n"
     )
     bot.send_message(message.chat.id, text)
 
@@ -316,7 +288,6 @@ def start(message):
             types.KeyboardButton('زبان هخامنشی𐎠'),
             types.KeyboardButton('دانستنی⁉️'),
             types.KeyboardButton('ارتباط با ما📞'),
-            types.KeyboardButton('ترجمه متن🔁')
         )
         bot.send_message(
             chat_id,
@@ -466,7 +437,6 @@ def contact_handler(m):
     bot.send_message(m.chat.id, "ارتباط با سازنده: @AliamA7931")
 
 
-@bot.message_handler(commands=['Translate'])
 
 
 # -------------------- پیام‌های عمومی --------------------
