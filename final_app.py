@@ -298,7 +298,7 @@ def start(message):
         # اگر عضو نبود → ساخت دکمه‌های عضویت
         join_btn = types.InlineKeyboardMarkup()
         join_btn.add(
-            types.InlineKeyboardButton("عضویت در کانال اول 📢", url="https://t.me/alibotteleg"),
+            types.InlineKeyboardButton("عضویت در کانال📢", url="https://t.me/alibotteleg"),
         )
         bot.send_message(
             chat_id,
