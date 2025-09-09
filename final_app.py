@@ -16,7 +16,7 @@ import re
 
 
 
-TOKEN = '7579645804:AAF5V1dumlyrbyHj0RQkOZO402la4csirAI'
+TOKEN = '7579645804:AAHKnhAsVPGDT80er-FggJEJKpakJ82ZxtE'
 Channel_1 = '@alibotteleg' 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
@@ -311,7 +311,7 @@ def start(message):
     user_id = message.from_user.id
     chat_id = message.chat.id
 
-    if is_user_members(Channel_1, user_id) and is_user_members(Channel_2, user_id):
+    if is_user_members(Channel_1, user_id):
         keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         keyboard.add(
             types.KeyboardButton('مدیریت گروه🤵‍♂️'),
