@@ -17,8 +17,7 @@ import re
 
 
 TOKEN = '7579645804:AAF5V1dumlyrbyHj0RQkOZO402la4csirAI'
-Channel_1 = '@rap_family1' 
-Channel_2 = "@alibotteleg"
+Channel_1 = '@alibotteleg' 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
@@ -334,12 +333,11 @@ def start(message):
         # اگر عضو نبود → ساخت دکمه‌های عضویت
         join_btn = types.InlineKeyboardMarkup()
         join_btn.add(
-            types.InlineKeyboardButton("عضویت در کانال اول 📢", url="https://t.me/rap_family1"),
-            types.InlineKeyboardButton("عضویت در کانال دوم 📢", url="https://t.me/alibotteleg")
+            types.InlineKeyboardButton("عضویت در کانال اول 📢", url="https://t.me/alibotteleg"),
         )
         bot.send_message(
             chat_id,
-            "توی هر دو کانال عضو نیستی ❌\n\nبرای استفاده از ربات، باید توی هر دو کانال زیر عضو بشی 👇",
+            "ت کانال عضو نیستی ❌\n\nبرای استفاده از ربات، باید در کانال زیر عضو بشی 👇",
             reply_markup=join_btn
         )
         bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن.")
