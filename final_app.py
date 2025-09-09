@@ -796,18 +796,16 @@ def left_user(message):
 
 
 
-@app.route('/webhook', methods=['POST'])
+@app.route(f"/{TOKEN}", methods=["POST"])
 def webhook():
-    if request.headers.get('content-type') == 'application/json':
-        update = telebot.types.Update.de_json(request.get_data().decode('utf-8'))
-        bot.process_new_updates([update])
-        return '', 200
-    return 'Invalid', 403
+    json_update = request.get_data().decode("utf-8")
+    update = telebot.types.Update.de_json(json_update)
+    bot.process_new_updates([update])
+    return "ok", 200
 
-@app.route('/')
+@app.route("/", methods=["GET"])
 def index():
-    return "ربات فعاله 🤖", 200
+    return "Bot is running!", 200
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))  # Render به PORT مقدار می‌ده
-    app.run(host='0.0.0.0', port=port)
+if __name__ == "main":
+    app.run(host="0.0.0.0", port=5000)
