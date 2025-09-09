@@ -22,12 +22,32 @@ bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
 
-translator = GoogleTranslator()
-user_translation_mode = {}
 
 user_warnings = {}  # دیکشنری برای نگه‌داری اخطار کاربران
+user_states = {}
+STATE_WAITING_TEXT = "waiting_for_text"
 
+@bot.message_handler(func=lambda m: m.text and "ترجمه متن🔁"in m.text)
+def ask_for_text(message):
+    user_states[message.chat.id] = STATE_WAITING_TEXT
+    bot.send_message(message.chat.id, "لطفاً متنی که می‌خوای ترجمه کنم رو بفرست ✍️")
 
+# گرفتن متن و ترجمه
+@bot.message_handler(func=lambda m: True)
+def handle_messages(message):
+    chat_id = message.chat.id
+    state = user_states.get(chat_id)
+
+    if state == STATE_WAITING_TEXT:
+        try:
+            translated = GoogleTranslator(source='auto', target='fa').translate(message.text)
+            bot.send_message(chat_id, f"✅ ترجمه:\n\n{translated}")
+        except Exception as e:
+            bot.send_message(chat_id, f"❌ خطا در ترجمه: {e}")
+        finally:
+            user_states[chat_id] = None  # خروج از حالت
+    else:
+        bot.send_message(chat_id, "برای ترجمه بنویس: «ترجمه متن»")
 
 
 
@@ -60,38 +80,12 @@ def handle_text(message):
  
 
 ############### translate text #################
-def is_english(text):
-        return all(ord(c) < 128 for c in text)
-
-# فعال‌سازی حالت ترجمه برای کاربر
-@bot.message_handler(func=lambda m: m.text == 'ترجمه متن🔁')
-def activate_translation_mode(message):
-    user_id = message.from_user.id
-    user_translation_mode[user_id] = True
-    bot.send_message(message.chat.id, "📝 لطفاً متنی که می‌خوای ترجمه کنم رو ارسال کن")
-    bot.register_next_step_handler(message, handle_messages)
-    
-def handle_messages(message):
-    user_id = message.from_user.id
-    text = message.text
-    
-    # حالت ترجمه فعال بود؟
-    if user_translation_mode.get(user_id):
-        lang = 'fa' if is_english(text) else 'en'
-        try:
-            result = translator.translate(text, dest=lang)
-            bot.send_message(message.chat.id, f"✅ ترجمه:\n\n{result.origin} \n\n⬅️ {result.text}")
-        except Exception:
-            bot.send_message(message.chat.id, "❌ خطا در ترجمه. لطفاً دوباره امتحان کن.")
-        finally:
-            user_translation_mode[user_id] = False  # خاموش کردن حالت ترجمه
-        return  # جلوگیری از برخورد با بقیه کدها در همین handler
 
 
 
 
    
-user_warnings = {}
+
 
 @bot.message_handler(func=lambda m: m.text and m.text.strip().lower().startswith('پین'))
 def pin(m):
@@ -337,7 +331,7 @@ def start(message):
         )
         bot.send_message(
             chat_id,
-            "در کانال عضو نیستی ❌\n\nبرای استفاده از ربات، باید در کانال زیر عضو بشی 👇",
+            "ت کانال عضو نیستی ❌\n\nبرای استفاده از ربات، باید در کانال زیر عضو بشی 👇",
             reply_markup=join_btn
         )
         bot.send_message(chat_id, "وقتی عضو شدی، دوباره /start رو بزن.")
@@ -473,27 +467,6 @@ def contact_handler(m):
 
 
 @bot.message_handler(commands=['Translate'])
-def translate_handler(m):
-    user_id = m.from_user.id
-    user_translation_mode[user_id] = True
-    bot.send_message(m.chat.id, "📝 لطفاً متنی که می‌خوای ترجمه کنم رو ارسال کن")
-    bot.register_next_step_handler(m, handle_messages)
-    
-def handle_messages(m):
-    user_id = m.from_user.id
-    text = m.text
-    
-    # حالت ترجمه فعال بود؟
-    if user_translation_mode.get(user_id):
-        lang = 'fa' if is_english(text) else 'en'
-        try:
-            result = translator.translate(text, dest=lang)
-            bot.send_message(m.chat.id, f"✅ ترجمه:\n\n{result.origin} \n\n⬅️ {result.text}")
-        except Exception:
-            bot.send_message(m.chat.id, "❌ خطا در ترجمه. لطفاً دوباره امتحان کن.")
-        finally:
-            user_translation_mode[user_id] = False  # خاموش کردن حالت ترجمه
-        return  # جلوگیری از برخورد با بقیه کدها در همین handler
 
 
 # -------------------- پیام‌های عمومی --------------------
