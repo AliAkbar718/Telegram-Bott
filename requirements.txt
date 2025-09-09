@@ -1,5 +1,5 @@
 Flask==2.3.3
 pyTelegramBotAPI==4.10.0
-jdatetime
-pytz
-googletrans==4.0.0-rc1
+googletrans==4.0.0rc1
+jdatetime==4.1.1
+pytz==2023.3
