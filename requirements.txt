@@ -1,6 +1,6 @@
 Flask==2.3.3
 pyTelegramBotAPI==4.10.0
-googletrans==4.0.0rc1
+httpx==0.24.1
+deep-translator==1.11.4
 jdatetime==4.1.1
 pytz==2023.3
-httpx>=0.24.1

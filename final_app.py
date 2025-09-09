@@ -11,7 +11,7 @@ import os
 from flask import Flask, request
 import random
 import pytz
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 import re
 
 
@@ -22,7 +22,7 @@ bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
 
-translator = Translator()
+translator = GoogleTranslator()
 user_translation_mode = {}
 
 user_warnings = {}  # دیکشنری برای نگه‌داری اخطار کاربران
